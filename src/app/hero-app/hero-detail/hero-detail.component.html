@@ -1,0 +1,11 @@
+<section class="my-hero-container" *ngIf="hero">
+  <h2>My favourite hero is {{hero.name}}!</h2>
+
+  <div><label for="id">id: </label>{{hero.id}}</div>
+  <div>
+    <label for="name">name: </label>
+    <input type="text" [(ngModel)]="hero.name" placeholder="name">
+  </div>
+  <span hidden="{{ this | logIt:'hero':'id' }}"></span>
+
+</section>

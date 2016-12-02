@@ -7,8 +7,8 @@ describe('try-out-u App', function() {
     page = new TryOutUPage();
   });
 
-  it('should display message saying app works', () => {
+  it('should display message saying Welcome!', () => {
     page.navigateTo();
-    expect(page.getParagraphText()).toEqual('app works!');
+    expect(page.getParagraphText()).toEqual('Welcome!');
   });
 });

@@ -1,0 +1,9 @@
+<h1>{{title}}</h1>
+<section class="heroes-container">
+  <app-hero-list 
+    [heroes]="heroesRxx | async" 
+    [heroRxxMap]="heroRxxMap" 
+    [actionRxx]="actionRxx"
+  ></app-hero-list>
+</section>
+<app-hero-detail [hero]="selectedHeroRxx | async"></app-hero-detail>

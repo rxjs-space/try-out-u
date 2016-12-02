@@ -1,25 +1,11 @@
-/**
- * This file and `main.node.ts` are identical, at the moment(!)
- * By splitting these, you're able to create logic, imports, etc that are "Platform" specific.
- * If you want your code to be completely Universal and don't need that
- * You can also just have 1 file, that is imported into both
- * client.ts and server.ts
- */
-
 import { NgModule } from '@angular/core';
-import { UniversalModule } from 'angular2-universal';
-import { FormsModule } from '@angular/forms';
-import { AppComponent } from './index';
-// import { RouterModule } from '@angular/router';
-// import { appRoutes } from './app/app.routing';
+import { UniversalModule, isBrowser, isNode } from 'angular2-universal/browser/browser';
 
-/**
- * Top-level NgModule "container"
- */
+import { AppComponent } from './index';
+import { PlatformCommonModule } from './platform-common/platform-common.module';
+
 @NgModule({
-  /** Root App Component */
   bootstrap: [ AppComponent ],
-  /** Our Components */
   declarations: [ AppComponent ],
   imports: [
     /**
@@ -27,11 +13,11 @@ import { AppComponent } from './index';
      * BrowserModule, HttpModule, and JsonpModule are included
      */
     UniversalModule,
-    FormsModule
-    /**
-     * using routes
-     */
-    // RouterModule.forRoot(appRoutes)
+    PlatformCommonModule
+  ],
+  providers: [
+    { provide: 'isBrowser', useValue: isBrowser },
+    { provide: 'isNode', useValue: isNode },
   ]
 })
 export class AppModule {

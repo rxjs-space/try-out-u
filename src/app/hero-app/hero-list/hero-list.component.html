@@ -1,0 +1,11 @@
+<div>
+  <h2 [class.siblings-collapse]="toggleCollapseSiblingState" (click)="toggleCollapseSibling()">Heroes</h2>
+  <ul class="heroes collapsable">
+    <app-hero-li 
+      *ngFor="let hero of heroes" 
+      [hero]="heroRxxMap.get(hero.id) | async"
+      [actionRxx]="actionRxx"
+    ></app-hero-li>
+  </ul>
+</div>
+<span hidden="{{ this | logIt:'heroes' }}"></span>

@@ -1,5 +1,7 @@
 # TryOutU
 
+[![Build Status][travis-badge]][travis-badge-url] (skipping e2e on travis for the moment)
+
 This project was generated with [angular-cli](https://github.com/angular/angular-cli) version 1.0.0-alpha.universal.2-2.
 
 ## Development server
@@ -29,3 +31,6 @@ Run `ng github-pages:deploy` to deploy to Github Pages.
 ## Further help
 
 To get more help on the `angular-cli` use `ng --help` or go check out the [Angular-CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+[travis-badge]: https://travis-ci.org/rxjs-space/try-out-u.svg?branch=master
+[travis-badge-url]: https://travis-ci.org/rxjs-space/try-out-u
