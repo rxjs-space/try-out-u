@@ -16,7 +16,8 @@
     "gc": "ung g component",
     "gd": "ung g directive",
     "gp": "ung g pipe",
-    "gs": "ung g service"
+    "gs": "ung g service",
+    "github": "ung gh-pages:deploy"
   },
   "private": true,
   "dependencies": {
