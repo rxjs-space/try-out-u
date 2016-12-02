@@ -4,7 +4,7 @@
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
-    "postinstall": "ng build --prod",
+    "postinstall": "ung build --prod",
     "start": "node ./dist/server.bundle",
     "dev": "ung serve",
     "lint": "tslint \"src/**/*.ts\" --force",
