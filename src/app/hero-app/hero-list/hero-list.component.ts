@@ -11,17 +11,11 @@ export class HeroListComponent implements OnInit {
   @Input() heroes: any;
   @Input() heroRxxMap: any;
   @Input() actionRxx: any;
-  toggleCollapseSiblingState = false;
   constructor() {
   }
 
   ngOnInit() {
     // debugger;
   }
-
-  toggleCollapseSibling() {
-    this.toggleCollapseSiblingState = !this.toggleCollapseSiblingState;
-  }
-
 
 }
