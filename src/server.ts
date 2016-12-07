@@ -10,7 +10,7 @@ import { enableProdMode } from '@angular/core';
 import { AppModule } from './app/app.node.module';
 import { environment } from './environments/environment';
 import { routes } from './server.routes';
-
+import { api } from './api';
 // App
 
 const app  = express();
@@ -40,6 +40,8 @@ app.use(compression());
  * serve static files
  */
 app.use(express.static(path.join(ROOT, 'dist'), {index: false}));
+
+app.use('/api', api);
 
 /**
  * place your api routes here
