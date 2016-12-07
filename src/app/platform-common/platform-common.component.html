@@ -6,5 +6,7 @@
   <a routerLink="/hero" routerLinkActive="active">Hero</a>
   <!--<a routerLink="/about" routerLinkActive="active">About</a>
   <a routerLink="/about/detail" routerLinkActive="active">About/Detail</a>-->
+  <a *ngIf="loginUrl" [href]="loginUrl">Login with Github</a>
+  <a *ngIf="!loginUrl">Login with Github</a>
 </nav>
 <router-outlet></router-outlet>
