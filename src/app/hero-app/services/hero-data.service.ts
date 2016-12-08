@@ -11,7 +11,7 @@ export class HeroDataService {
   private _heroesRxx: BehaviorSubject<Hero[]>;
   private _heroRxxMap: Map<any, BehaviorSubject<Hero>>; // map from hero.id to BehaviorSubject<Hero>
   private _actionRxx: Subject<any> = new Subject();
-  private _selectedHeroRxx: Subject<Hero> = new Subject();
+  private _selectedHeroRxx: Subject<Hero> = new Subject<Hero>();
 
   constructor() {
     this.heroes = [

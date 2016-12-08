@@ -10,7 +10,8 @@ import { enableProdMode } from '@angular/core';
 import { AppModule } from './app/app.node.module';
 import { environment } from './environments/environment';
 import { routes } from './server.routes';
-import { api } from './api';
+import { api } from './_api';
+import './_model';
 // App
 
 const app  = express();

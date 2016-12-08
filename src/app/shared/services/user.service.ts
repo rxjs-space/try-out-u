@@ -32,6 +32,7 @@ export class UserService {
             const regex = /[?&](code=.+)/;
             const matched = url.match(regex);
             // if gh code is in the url, remove the code and redirect
+            // for example, if we have http://localhost:4200?code=xxx, we will be redirected to http://localhost:4200, without code query.
             if (matched && matched[1]) {
               this._ghCode.next(matched[1].substring(5)); // push the gh code to BehaviorSubject
               let redirUrl;
@@ -48,11 +49,13 @@ export class UserService {
               this._loginUrlRxx.next(this._ghAuthUrlPre + url)
             }
           }).subscribe();
-      // http://localhost:4200/hero?code=52fa96131578ba100e9a
+
+        // each time the ghCode changes, go to backend
+        // the backend will use to code to get access_token and user info and login
         this._ghCode.filter(code => Boolean(code))
           .switchMap(code => {
             console.log(code);
-            return this.http.get(`/api/auth/ghtoken?code=${code}`)
+            return this.http.get(`/api/auth/ghtoken?code=${code}`);
             // return this.http.post(ghAuth.tokenUrl, {
             //   client_id: ghAuth.cid,
             //   client_secret: ghAuth.csecret,
