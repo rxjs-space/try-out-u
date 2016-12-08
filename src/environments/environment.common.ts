@@ -9,6 +9,6 @@ export const envCommon = {
   mongodb: {
     dbUsername: process.env.DB_USERNAME || 'rxjs-space0',
     dbPassword: process.env.DB_PASSWORD || 'dev00000',
-    dbAt: process.env.DB_AT || 'ds047335.mlab.com:47335/try-out-u-dev'
+    dbAt: process.env.DB_AT || 'ds047335.mlab.com:47335/try-out-u-dev',
   }
 };
