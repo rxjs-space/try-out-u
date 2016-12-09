@@ -1,0 +1,5 @@
+<div>
+  <a [href]="loginUrl" *ngIf="!loginStatus" (click)="onClickLogin()">Login with Github</a>
+  <!--<a *ngIf="loggingIn">Logging in...</a>-->
+  <a *ngIf="loginStatus">Welcome, Donald</a>
+</div>

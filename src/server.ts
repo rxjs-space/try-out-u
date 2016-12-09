@@ -5,6 +5,8 @@ import './polyfills.ts';
 import * as path from 'path';
 import * as express from 'express';
 import * as compression from 'compression';
+import { Response } from 'express';
+
 import { createEngine } from 'angular2-express-engine';
 import { enableProdMode } from '@angular/core';
 import { AppModule } from './app/app.node.module';
@@ -54,7 +56,7 @@ app.use('/api', api);
  * @param req
  * @param res
  */
-function ngApp(req: any, res: any) {
+export const ngApp = (req: any, res: Response) => {
   res.render('index', {
     req,
     res,

@@ -7,9 +7,10 @@ import { PlatformCommonComponent } from './platform-common.component';
 import { HomeComponent } from './home/home.component';
 import { HeroAppModule } from '../hero-app/hero-app.module';
 import { SharedModule } from '../shared/shared.module';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
-  declarations: [PlatformCommonComponent, HomeComponent],
+  declarations: [PlatformCommonComponent, HomeComponent, LoginComponent],
   exports: [PlatformCommonComponent],
   imports: [
     CommonModule,

@@ -8,7 +8,8 @@ import { LogItPipe } from './pipes/log-it.pipe';
 import { LogService } from './services/log.service';
 import { ToggleClassDirective } from './directives/toggle-class.directive';
 import { UserService } from './services/user.service';
-// import { GhCodeResolveService } from './services/gh-code-resolve.service';
+import { HelpersService } from './services/helpers.service';
+
 
 const ghAuth = environment.ghAuth;
 
@@ -32,7 +33,7 @@ export class SharedModule {
         LogService,
         UserService,
         { provide: 'GhAuth', useValue: ghAuth },
-        // GhCodeResolveService
+        HelpersService
       ]
     };
   }

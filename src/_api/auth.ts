@@ -1,37 +1,75 @@
 import * as express from 'express';
 export const authApi = express.Router();
+
+import * as jwt from 'jsonwebtoken';
 import { environment } from '../environments/environment';
-import { httpsReqFac } from '../_helpers';
-import { helper_getUserInfo } from './auth-helpers';
+import { httpsReqPromise } from '../_helpers';
+import { saveUserToDb } from '../_model';
 
 const ghAuth = environment.ghAuth;
 
+const codeToGhToken = (code) => new Promise((resolve, reject) => {
+  const requestOptions = {
+    hostname: 'github.com',
+    path: `/login/oauth/access_token?client_id=${ghAuth.cid}&client_secret=${ghAuth.csecret}&code=${code}`,
+    method: 'POST'
+  };
+  httpsReqPromise(requestOptions).then((fullData) => {
+    const ghToken = fullData.match(/access_token=(.*?)&/)[1];
+    resolve(ghToken);
+  });
+});
 
-authApi.get('/', (req, res) => {
-  console.log(req);
+const ghTokenToUserInfo = (ghToken) => new Promise((resolve, reject) => {
+  const requestOptions = {
+    hostname: 'api.github.com',
+    path: `/user?access_token=${ghToken}`,
+    method: 'GET',
+    headers: { 'User-Agent': 'tryau-dev' }
+  };
+  httpsReqPromise(requestOptions).then((fullData) => {
+    const userInfo = JSON.parse(fullData);
+    // console.log(userInfo);
+    resolve(userInfo);
+  });
+});
+
+const genMySiteToken = (dbResult) => new Promise((resolve, reject) => {
+  const payload = Object.assign({}, dbResult, {
+    exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24 * 7)
+  });
+  const secret = 'foraiur';
+  // sign(payload, secretOrPrivateKey, options, callback): void;
+  const mySiteToken = jwt.sign(payload, secret);
+  resolve(mySiteToken);
+});
+
+authApi.get('/', (req, res, next) => {
+  // console.log(req);
   if (req.query.code) {
-    console.log('redirecting...');
-    res.redirect('/');
+    console.log('authentication processing...');
+    codeToGhToken(req.query.code) // a POST request to gh
+      .then(ghTokenToUserInfo)    // a GET request to gh/api
+      .then(saveUserToDb)         // find({id: user.id}), none -> insertOne
+      .then(genMySiteToken)
+      .then((mySiteTokenX) => {
+        console.log('authentication done.');
+        res.send(mySiteTokenX);
+      })
+      .catch(e => {
+        res.status(500).send(e);
+      });
   } else {
-    console.log('no gh-code');
+    res.status(400).send('no gh-code');
   }
 });
 
+authApi.get('pre', (req, res) => {
+  if (req.query.url_before_login) {
 
+  }
+})
 
-authApi.get('/ghtoken', (req, res) => {
-  const code = req.query.code;
-  const requestOptions = {
-      hostname: 'github.com',
-      path: `/login/oauth/access_token?client_id=${ghAuth.cid}&client_secret=${ghAuth.csecret}&code=${code}`,
-      method: 'POST'
-      // client_id: ghAuth.cid,
-      // client_secret: ghAuth.csecret,
-      // code: ghCode
-    };
-  httpsReqFac(requestOptions, helper_getUserInfo(res), /*onError return to frontEnd*/); // request token and get user info with the token
-
-});
 
 
 

@@ -10,16 +10,16 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class PlatformCommonComponent implements OnInit {
   title: string = 'Welcome!';
-  loginUrl: string;
+  // loginUrl: string;
   constructor(
     private userService: UserService,
     private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.userService.loginUrlRxx.subscribe(url => {
-      // console.log(url);
-      this.loginUrl = url;
-    });
+    // this.userService.loginUrlRxx.subscribe(url => {
+    //   // console.log(url);
+    //   this.loginUrl = url;
+    // });
     // this.route.data.subscribe(data=> console.log(`reading data at platformcommon: ${JSON.stringify(data)}`));
   }
 
