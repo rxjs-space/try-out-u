@@ -1,13 +1,23 @@
 import * as express from 'express';
 export const authApi = express.Router();
 import { environment } from '../environments/environment';
-import { httpsReqFac, helper_getUserInfo } from './auth-helpers';
+import { httpsReqFac } from '../_helpers';
+import { helper_getUserInfo } from './auth-helpers';
 
 const ghAuth = environment.ghAuth;
 
+
 authApi.get('/', (req, res) => {
-  res.send('user home page');
+  console.log(req);
+  if (req.query.code) {
+    console.log('redirecting...');
+    res.redirect('/');
+  } else {
+    console.log('no gh-code');
+  }
 });
+
+
 
 authApi.get('/ghtoken', (req, res) => {
   const code = req.query.code;

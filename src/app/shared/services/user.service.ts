@@ -14,7 +14,8 @@ import 'rxjs/add/operator/switchMap';
 @Injectable()
 export class UserService {
   // private _ghAuthUrl = `${this.ghAuth.baseUrl}?client_id=${this.ghAuth.cid}&state=${this.ghAuth.cstate}&redirect_uri=`;
-  private _ghAuthUrlPre = `${this.ghAuth.baseUrl}?client_id=${this.ghAuth.cid}&redirect_uri=http://localhost:4200`;
+  // private _ghAuthUrlPre = `${this.ghAuth.baseUrl}?client_id=${this.ghAuth.cid}&redirect_uri=http://localhost:4200`;
+  private _ghAuthUrlPre = `${this.ghAuth.baseUrl}?client_id=${this.ghAuth.cid}`;
   private _loginUrlRxx: BehaviorSubject<any> = new BehaviorSubject(this._ghAuthUrlPre);
   private _ghCode: BehaviorSubject<string> = new BehaviorSubject(null);
 
@@ -24,15 +25,17 @@ export class UserService {
     private route: ActivatedRoute,
     @Inject('GhAuth') private ghAuth,
     @Inject('isBrowser') private isBrowser) {
+
       if (isBrowser) {
         this.router.events
           .filter(event => event instanceof NavigationEnd)
           .map(event => {
             const url = this.router.routerState.snapshot.url;
-            const regex = /[?&](code=.+)/;
+            const regex = /[?&](code=.+)/; // assuming that code is at the end of the url
             const matched = url.match(regex);
             // if gh code is in the url, remove the code and redirect
-            // for example, if we have http://localhost:4200?code=xxx, we will be redirected to http://localhost:4200, without code query.
+            // for example, if we have http://localhost:4200?code=xxx, 
+            // we will be redirected to http://localhost:4200, without 'code=xxx'.
             if (matched && matched[1]) {
               this._ghCode.next(matched[1].substring(5)); // push the gh code to BehaviorSubject
               let redirUrl;
@@ -54,13 +57,8 @@ export class UserService {
         // the backend will use to code to get access_token and user info and login
         this._ghCode.filter(code => Boolean(code))
           .switchMap(code => {
-            console.log(code);
+            // console.log(code);
             return this.http.get(`/api/auth/ghtoken?code=${code}`);
-            // return this.http.post(ghAuth.tokenUrl, {
-            //   client_id: ghAuth.cid,
-            //   client_secret: ghAuth.csecret,
-            //   code: code
-            // })
           })
           .subscribe(d => {
             try {
@@ -71,6 +69,7 @@ export class UserService {
           });
 
       }
+
    }
 
   get myTokenAlive() {
@@ -83,38 +82,11 @@ export class UserService {
 
   login() {
       console.log(`${this.ghAuth.baseUrl}?client_id=${this.ghAuth.cid}&state=${this.ghAuth.cstate}`);
-
-    // this.http.get('/api/auth/oauth2url')
-    //   .map(res => res.text() )
-    //   .subscribe(console.log);
-
-    // get the auth2url, go to that url, and login, and return to server with code
-    // server get token with the code and generate myToken and send to angular
-    // angular saves the tokens
-
-
-
-
-    // if ( this.ghToken ) {
-    //   getGhData(this.ghToken)
-    //     .subscribe(data => {
-    //       genMyToken();
-    //     }
-    //     .catch(err => {
-    //       if (err === badGhToken) {
-    //         ghAuth().then(genMyToken);
-    //       } else {
-    //         console.log(err);
-    //       }
-    //     })
-    //   } else {
-    //    ghAuth().then(genMyToken());
-    //  }
    }
 
-   logout() {
+  logout() {
 
-   }
+  }
 
 
 }

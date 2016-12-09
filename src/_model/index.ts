@@ -1,14 +1,15 @@
-import { MongoClient, Db, ObjectID } from 'mongodb';
+import { MongoClient, Db, /*ObjectID*/ } from 'mongodb';
 import { environment } from '../environments/environment';
 
 import { Observable } from 'rxjs/Observable';
 // import { Observable } from 'rxjs';
-import 'rxjs/add/observable/bindNodeCallback';
 import 'rxjs/add/observable/fromPromise';
+import 'rxjs/add/observable/bindNodeCallback';
 import 'rxjs/add/observable/concat';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toArray';
+
 
 const db_url = `mongodb://${environment.mongodb.dbUsername}:${environment.mongodb.dbPassword}@${environment.mongodb.dbAt}`;
 
@@ -32,7 +33,6 @@ interface QueryAction {
   options?: obj;
 }
 
-
 interface QueryResult {
   type: QueryType;
   briefResult?: obj;
@@ -52,7 +52,7 @@ class QueryBuilderPre {
   private _dbRx: Observable<Db>;
 
   constructor(dbUrl: string, options?: QueryOptions) {
-    this._dbRx = <Observable<Db>>Observable.fromPromise(MongoClient.connect(dbUrl));
+    this._dbRx = <Observable<Db>>Observable.bindNodeCallback(MongoClient.connect)(dbUrl);
     if (!options) {
       this._options = this._defaultOptions;
     } else {
@@ -105,7 +105,6 @@ class QueryBuilder {
     if (!this._operations.length) { return Observable.throw(new Error('operations list is empty.')); };
     return this._dbRx.switchMap(db => {
       const coll = db.collection(this._options.collection);
-      // try {const coll = db.collection(this._options.collection);} catch(e) {console.log('no collection?'); throw e};
       const operationsRx = this._operations.map(operation => {
         switch (operation.type) {
           case 'insertOne':
@@ -119,7 +118,7 @@ class QueryBuilder {
             return Observable.fromPromise(coll.find(operation.query).toArray())
               .map(<(result: any) => QueryResult>(result => ({
                 type: operation.type,
-                briefResult: result
+                briefResult: result // this is an array
               })));
           case 'updateOne':
             return Observable.fromPromise(coll.updateOne(operation.query, operation.update, operation.options = {}))
@@ -166,8 +165,8 @@ const qbPre = new QueryBuilderPre(db_url);
 
 export const qbFac = (collection) => qbPre.collection(collection);
 
-// const qb = qbPre.collection('npg');
-// qb.find({}).rx().subscribe(
+const qb = qbPre.collection('abc');
+// qb.find({x: 1}).rx().subscribe(
 //   results => {
 //     console.log(results);
 //   },
