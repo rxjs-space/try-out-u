@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "license": "MIT",
   "angular-cli": {},
+  "engines": {
+    "node": "~6.5.0"
+  },
   "scripts": {
     "postinstall": "ung build --prod",
     "start": "node ./dist/server.bundle",
