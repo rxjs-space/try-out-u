@@ -9,21 +9,14 @@ import { ActivatedRoute } from '@angular/router';
 export class LoginComponent implements OnInit {
   @Input() loginStatus: boolean;
   @Input() loginUrl: string;
-  loggingIn: boolean;
+  @Input() loggingIn: boolean;
 
   constructor(
     private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
-    this.route.queryParams
-      .subscribe(queryParams => {
-        if (queryParams['loggingIn'] || queryParams['code']) {
-          this.loggingIn = true;
-        } else {
-          this.loggingIn = false;
-        }
-      })
+
   }
 
 
