@@ -10,8 +10,6 @@
   <app-login 
     [loginStatus]="userService.loginStatusRxx | async"
     [loginUrl]="userService.loginUrlRxx | async"
-    [loggingIn]="userService.logginIn"
-    (clickLogin)="userService.loggingIn = true"
   ></app-login>
 </nav>
 <router-outlet></router-outlet>

@@ -19,5 +19,4 @@ export class GhCodeResolveService implements Resolve<string>, CanActivateChild {
     // console.log(route.params);
     return Observable.of(true);
   }
-
 }

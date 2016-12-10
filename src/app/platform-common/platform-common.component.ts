@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { UserService } from '../shared/services/user.service';
 import { ActivatedRoute } from '@angular/router';
 
@@ -6,16 +6,16 @@ import { ActivatedRoute } from '@angular/router';
   selector: 'app-platform-common',
   templateUrl: './platform-common.component.html',
   styleUrls: ['./platform-common.component.scss'],
-  changeDetection: 0
+  changeDetection: 1
 })
 export class PlatformCommonComponent implements OnInit {
   title: string = 'Welcome!';
   // loginUrl: string;
   constructor(
-    private userService: UserService,
-    private route: ActivatedRoute) { }
+    private userService: UserService) { }
 
   ngOnInit() {
+    // console.log(Reflect.getMetadata('annotations', this.constructor));
     // this.userService.loginUrlRxx.subscribe(url => {
     //   // console.log(url);
     //   this.loginUrl = url;

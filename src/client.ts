@@ -20,5 +20,7 @@ const platformRef = platformUniversalDynamic();
  * bootstrap Angular 2 on document ready
  */
 document.addEventListener('DOMContentLoaded', () => {
-  platformRef.bootstrapModule(AppModule).catch(console.error);
+  platformRef.bootstrapModule(AppModule)
+    // .then(d => console.log(d))
+    .catch(console.error);
 });

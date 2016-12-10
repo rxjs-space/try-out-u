@@ -18,7 +18,11 @@ const ghAuth = environment.ghAuth;
     CommonModule,
     FormsModule
   ],
-  declarations: [/*SharedComponent,*/ LogItPipe, ToggleClassDirective ],
+  declarations: [
+    /*SharedComponent,*/ 
+    LogItPipe, 
+    ToggleClassDirective
+  ],
   exports: [
     LogItPipe,
     FormsModule,

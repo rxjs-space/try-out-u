@@ -7,11 +7,12 @@ import { httpsReqPromise } from '../_helpers';
 import { saveUserToDb } from '../_model';
 
 const ghAuth = environment.ghAuth;
+ghAuth['csecret'] = process.env.GH_CSECRET || '64e4ac3b205e933887c90bbaac82fdfcdb30ab98';
 
 const codeToGhToken = (code) => new Promise((resolve, reject) => {
   const requestOptions = {
     hostname: 'github.com',
-    path: `/login/oauth/access_token?client_id=${ghAuth.cid}&client_secret=${ghAuth.csecret}&code=${code}`,
+    path: `/login/oauth/access_token?client_id=${ghAuth.cid}&client_secret=${ghAuth['csecret']}&code=${code}`,
     method: 'POST'
   };
   httpsReqPromise(requestOptions).then((fullData) => {

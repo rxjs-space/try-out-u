@@ -3,7 +3,7 @@ import { Http } from '@angular/http';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { tokenNotExpired } from 'angular2-jwt';
+// import { tokenNotExpired } from 'angular2-jwt';
 
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
@@ -21,7 +21,7 @@ export class UserService {
   private _loginUrlRxx: BehaviorSubject<any> = new BehaviorSubject(this._ghAuthUrlPre);
   private _ghCode: BehaviorSubject<string> = new BehaviorSubject(null);
   private _loginStatusRxx: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  
+
     // '-1' is not logged-in, 0 is logging-in, 1 is logged-in
 
   constructor(
@@ -33,33 +33,25 @@ export class UserService {
     @Inject('isBrowser') private isBrowser) {
 
       if (isBrowser) { // if in browser, and not logged in
-        // at each NavigationEnd, check if there's query['code'],
+      // at each NavigationEnd, check if there's query['code'],
         // true: push the code to this._ghCode, then trigger the log-in process; and redirect to url without query['code']
         // false: update the href for log-in anchor, so once click on the anchor, we know where to redirec
-        this.route.queryParams.subscribe(console.log);
-        this.route.url.subscribe(console.log);
+
         this._loginStatusRxx
           .filter(v => !v) // only check the query['code'] when not logged in (v === false)
           .switchMap(() => {
             return this.router.events
               .filter(event => event instanceof NavigationEnd)
               .map(event => {
-                console.log(this.router.routerState);
-                const url = this.router.routerState.snapshot.url;
-                const regex = /[?&](code=.+)/; // assuming that code is at the end of the url
-                const matched = url.match(regex);
-                if (matched && matched[1]) {
-                  this._ghCode.next(matched[1].substring(5)); // push the gh code to BehaviorSubject
-                  let redirUrl;
-                  switch (true) {
-                    case matched && matched[0].indexOf('?') !== -1:
-                      redirUrl = url.substring(0, url.indexOf('?'));
-                      break;
-                    case matched && matched[0].indexOf('&') !== -1:
-                      redirUrl = url.substring(0, url.indexOf(matched[0]));
-                      break;
-                  }
-                  this.router.navigateByUrl(redirUrl);
+                const url = this.router.url;
+                const urlTree = this.router.parseUrl(url);
+                if (urlTree.queryParams['code']) {
+                  const code = urlTree.queryParams['code'];
+                  this._ghCode.next(code); // push the ghCode to BehaviorSubject
+                  const redirectUrlTree = Object.assign({}, urlTree);
+                  delete redirectUrlTree.queryParams['code']; // remove the ghCode for redirect
+                  redirectUrlTree.queryParams['loggingIn'] = 'true'; // set loggingIn queryParam for login component
+                  this.router.navigateByUrl(this.router.serializeUrl(redirectUrlTree));
                 } else {
                   this._loginUrlRxx.next(this._ghAuthUrlPre + url);
                 }
@@ -67,14 +59,24 @@ export class UserService {
           }).subscribe();
 
         // each time receiving a new ghCode, go to backend,
-        // the backend will use to code to get access_token and user info and login
+
         this._ghCode.filter(code => Boolean(code))
           .switchMap(code => {
             return this.http.get(`/api/auth/?code=${code}`);
+            // the backend will use to code to get gh access_token and gh user info and compare/save to db and generate my_jwt
           })
           .subscribe(res => { // if login success...
+            // remove queryParams['loggingIn']
+            const urlTree = this.router.parseUrl(this.router.url);
+            if (urlTree.queryParams['loggingIn']) {
+              const redirectUrlTree = Object.assign({}, urlTree);
+              delete redirectUrlTree.queryParams['loggingIn'];
+              this.router.navigateByUrl(this.router.serializeUrl(redirectUrlTree));
+            }
             this._loginStatusRxx.next(true);
-            const userInfo = helpers.parseJwt(res.text());
+            const mySiteToken = res.text();
+            // and save mySiteToken to localStorage
+            const userInfo = helpers.parseJwt(mySiteToken);
             console.log(userInfo);
           }, err => {       // if login failed...
             console.log(err);
@@ -94,14 +96,6 @@ export class UserService {
 
   get loginStatusRxx() {
     return this._loginStatusRxx;
-  }
-
-  get logginIn() {
-    return this.isBrowser ? Boolean(localStorage.getItem('loggingIn')) : false;
-  }
-
-  set loggingIn(v) {
-    localStorage.setItem('loggingIn', (true).toString());
   }
 
   login() {
