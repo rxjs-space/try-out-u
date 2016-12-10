@@ -37,12 +37,12 @@ export class UserService {
         .filter(queryParams => queryParams['code'] || queryParams['loggingIn'])
         .subscribe(() => {
           this._loggingInRxx.next(true);
-        })
-      
+        });
 
       if (!isBrowser) {
         const ghAuth = environment.ghAuth;
-        const ghAuthUrlPre = `${ghAuth.baseUrl}?client_id=${ghAuth.cid}&redirect_uri=http://localhost:4200`;
+        const redirectRoot = environment.production ? 'https://tryau.herokuapp.com' : 'http://localhost:4200'
+        const ghAuthUrlPre = `${ghAuth.baseUrl}?client_id=${ghAuth.cid}&redirect_uri=${redirectRoot}`;
         this._loginUrlRxx.next(ghAuthUrlPre);
       } else {
         // queryParams with code or loggingIn
