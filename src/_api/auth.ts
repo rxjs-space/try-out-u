@@ -15,10 +15,12 @@ const codeToGhToken = (code) => new Promise((resolve, reject) => {
     path: `/login/oauth/access_token?client_id=${ghAuth.cid}&client_secret=${csecret}&code=${code}`,
     method: 'POST'
   };
-  httpsReqPromise(requestOptions).then((fullData) => {
-    const ghToken = fullData.match(/access_token=(.*?)&/)[1];
-    resolve(ghToken);
-  });
+  httpsReqPromise(requestOptions)
+    .then((fullData) => {
+      const ghToken = fullData.match(/access_token=(.*?)&/)[1];
+      resolve(ghToken);
+    })
+    .catch(e => reject(e));
 });
 
 const ghTokenToUserInfo = (ghToken) => new Promise((resolve, reject) => {
@@ -28,11 +30,13 @@ const ghTokenToUserInfo = (ghToken) => new Promise((resolve, reject) => {
     method: 'GET',
     headers: { 'User-Agent': 'tryau-dev' }
   };
-  httpsReqPromise(requestOptions).then((fullData) => {
-    const userInfo = JSON.parse(fullData);
-    // console.log(userInfo);
-    resolve(userInfo);
-  });
+  httpsReqPromise(requestOptions)
+    .then((fullData) => {
+      const userInfo = JSON.parse(fullData);
+      // console.log(userInfo);
+      resolve(userInfo);
+    })
+    .catch(e => reject(e));
 });
 
 const genMySiteToken = (dbResult) => new Promise((resolve, reject) => {

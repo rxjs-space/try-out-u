@@ -2,5 +2,5 @@
   <a *ngIf="!isBrowser && !loggingIn">Checking log-in status...</a>
   <a *ngIf="isBrowser && !loginStatus && !loggingIn" [href]="loginUrl" (click)="loggingIn=true">Login with Github</a>
   <a *ngIf="loggingIn">Logging in...</a>
-  <a *ngIf="loginStatus">Welcome, Donald</a>
+  <a *ngIf="loginStatus" (click)="onLogOutClick()">Log out</a>
 </div>

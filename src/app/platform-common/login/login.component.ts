@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Inject } from '@angular/core';
+import { Component, OnInit, Input, Inject, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -10,6 +10,7 @@ export class LoginComponent implements OnInit {
   @Input() loginStatus: boolean;
   @Input() loginUrl: string;
   @Input() loggingIn: boolean;
+  @Output() logOut = new EventEmitter();
 
   constructor(
     private route: ActivatedRoute,
@@ -17,6 +18,10 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+  }
+
+  onLogOutClick() {
+    this.logOut.emit();
   }
 
 

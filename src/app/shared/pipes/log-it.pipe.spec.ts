@@ -7,12 +7,15 @@ import { LogService } from '../services/log.service';
 describe('LogItPipe', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [LogService]
+      providers: [
+        LogService,
+        {provide: 'isProd', useValue: true}
+      ]
     });
   });
 
-  it('create an instance', inject([LogService], (service: LogService) => {
-    let pipe = new LogItPipe(service);
+  it('create an instance', inject([LogService, 'isProd'], (service: LogService, isProd: 'isProd') => {
+    let pipe = new LogItPipe(service, isProd);
     expect(pipe).toBeTruthy();
   }));
 });

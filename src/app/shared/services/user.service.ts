@@ -26,6 +26,8 @@ export class UserService {
   private _loggingInRxx: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private _loginUrlRxx: BehaviorSubject<string> = new BehaviorSubject(null);
   private _ghAuth: any;
+  private _userInfoRxx: BehaviorSubject<any> = new BehaviorSubject(null);
+  private _mySiteTokenRxx: BehaviorSubject<string> = new BehaviorSubject(null);
 
   constructor(
     private http: Http,
@@ -41,6 +43,9 @@ export class UserService {
 
       if (isBrowser) {
         // queryParams with code or loggingIn
+        if (this.tokenNotExpired()) {
+          this._loginStatusRxx.next(true);
+        }
         this._loginStatusRxx
           .filter(v => !v)
           .switchMap(() => this.generateAndUpdateLoginUrl())
@@ -50,7 +55,7 @@ export class UserService {
       }
    }
 
-   private generateAndUpdateLoginUrl(): Observable<any> {
+  private generateAndUpdateLoginUrl(): Observable<any> {
     return this.route.queryParams
       .switchMap(queryParams => {
         if (queryParams['code']) {
@@ -61,7 +66,7 @@ export class UserService {
       });
    }
 
-  private dealWithCode(code) {
+  private dealWithCode(code) { // remove code queryParam from url and send code to backend
 
     const url = this.router.url;
     const urlTree = this.router.parseUrl(url);
@@ -72,17 +77,6 @@ export class UserService {
 
     this._ghCode.next(code); // push the ghCode to BehaviorSubject
     return Observable.of('will process with code');
-  }
-
-  private ghAuthRx(): Observable<any> {
-    // because the client bundle is generated before process.env is set (in the postinstall script),
-    // so we need to http.get the ghAuth (after process.env is set).
-    if (this._ghAuth) {
-      return Observable.of(this._ghAuth);
-    } else {
-      return this.http.get('/api/auth/gh-auth-info')
-        .map(res => res.json());
-    }
   }
 
   private setGhAuthUrlRx(): Observable<any> {
@@ -99,6 +93,19 @@ export class UserService {
       });
   }
 
+  private ghAuthRx(): Observable<any> {
+    // because the client bundle is generated before process.env is set (in the postinstall script),
+    // so we need to http.get the ghAuth (after process.env is set).
+    if (this._ghAuth) {
+      return Observable.of(this._ghAuth);
+    } else {
+      return this.http.get('/api/auth/gh-auth-info')
+        .map(res => {
+          this._ghAuth = res.json();
+          return this._ghAuth;
+        });
+    }
+  }
 
   private codeSubscription() {
     // each time receiving a new ghCode, go to backend,
@@ -118,16 +125,29 @@ export class UserService {
         this._loginStatusRxx.next(true);
         this._loggingInRxx.next(false);
         const mySiteToken = res.text();
-        // and save mySiteToken to localStorage
-        const userInfo = this.helpers.parseJwt(mySiteToken);
+        localStorage.setItem('mySiteToken', mySiteToken); // save the token to localStorage
+        const userInfo = this.helpers.parseJwt(mySiteToken, 1);
         console.log(userInfo);
+        this._userInfoRxx.next(userInfo);
       }, err => {       // if login failed...
         console.log(err);
       });
   }
 
+  logOut() {
+    this._loginStatusRxx.next(false);
+    localStorage.removeItem('mySiteToken');
+  }
 
-
+  tokenNotExpired() {
+    const mySiteToken = localStorage.getItem('mySiteToken');
+    if (mySiteToken) {
+      const tokenExp = this.helpers.parseJwt(mySiteToken, 1)['exp'];
+      return tokenExp > (Date.now() / 1000);
+    } else {
+      return false;
+    }
+  }
 
   // get myTokenAlive() {
   //   return tokenNotExpired();
@@ -142,9 +162,16 @@ export class UserService {
   }
 
   get loggingInRxx() {
-    return this._loggingInRxx
+    return this._loggingInRxx;
   }
 
+  get userInfoRxx() {
+    return this._userInfoRxx;
+  }
+
+  get mySiteTokenRxx() {
+    return this._mySiteTokenRxx;
+  }
 
   logout() {
 

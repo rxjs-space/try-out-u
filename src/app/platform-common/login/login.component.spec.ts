@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 import { RouterTestingModule } from '@angular/router/testing';
+import { isBrowser } from 'angular2-universal/browser/browser';
 
 import { LoginComponent } from './login.component';
 
@@ -13,7 +14,10 @@ describe('LoginComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ LoginComponent ],
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule],
+      providers: [
+        { provide: 'isBrowser', useValue: isBrowser },
+      ]
     })
     .compileComponents();
   }));

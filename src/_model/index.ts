@@ -2,10 +2,8 @@ import { MongoClient } from 'mongodb';
 import { environment } from '../environments/environment';
 
 const db_url = `mongodb://${environment.mongodb.dbUsername}:${environment.mongodb.dbPassword}@${environment.mongodb.dbAt}`;
-const tryCloseDb = (db, reject) => {
-  try {db.close(); } catch (e) {reject(e); };
-};
 
+// try to find the user first, if not found, save new;
 export const saveUserToDb = (userInfo) => new Promise((resolve, reject) => {
   MongoClient.connect(db_url)
     .then(db => {
@@ -13,7 +11,7 @@ export const saveUserToDb = (userInfo) => new Promise((resolve, reject) => {
         .find({id: userInfo.id}).toArray()
         .then(findResult => {
           if (findResult[0]) { // if the user exists in db
-            tryCloseDb(db, reject);
+            db.close(); // not catching error for every db.close()
             const data = Object.assign({}, findResult[0]);
             delete data._id;
             resolve({ data: data, message: 'existing user' });
@@ -27,18 +25,18 @@ export const saveUserToDb = (userInfo) => new Promise((resolve, reject) => {
             };
             db.collection('users').insertOne(userInfo)
               .then(insertResult => {
-                tryCloseDb(db, reject);
+                db.close();
                 const data = Object.assign({}, insertResult.ops[0]);
                 delete data._id;
                 resolve({ data: data, message: 'new user' });
               })
               .catch(e => {
-                tryCloseDb(db, reject); reject(e);
+                db.close(); reject(e);
               });
           }
         })
         .catch(e => {
-          tryCloseDb(db, reject); reject(e);
+          db.close(); reject(e);
         });
     })
     .catch(e => {
