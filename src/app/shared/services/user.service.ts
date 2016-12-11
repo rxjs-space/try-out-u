@@ -23,9 +23,8 @@ export class UserService {
   private _ghCode: BehaviorSubject<string> = new BehaviorSubject(null);
   private _loginStatusRxx: BehaviorSubject<boolean> = new BehaviorSubject(false);
     // '-1' is not logged-in, 0 is logging-in, 1 is logged-in
-  private _ghAuthUrlPre: string;
-  private _loginUrlRxx: BehaviorSubject<any> = new BehaviorSubject(null);
   private _loggingInRxx: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  private _loginUrlRxx: BehaviorSubject<string> = new BehaviorSubject(null);
 
   constructor(
     private http: Http,
@@ -39,12 +38,7 @@ export class UserService {
           this._loggingInRxx.next(true);
         });
 
-      if (!isBrowser) {
-        const ghAuth = environment.ghAuth;
-        const redirectRoot = environment.production ? 'https://tryau.herokuapp.com' : 'http://localhost:4200'
-        const ghAuthUrlPre = `${ghAuth.baseUrl}?client_id=${ghAuth.cid}&redirect_uri=${redirectRoot}`;
-        this._loginUrlRxx.next(ghAuthUrlPre);
-      } else {
+      if (isBrowser) {
         // queryParams with code or loggingIn
         this._loginStatusRxx
           .filter(v => !v)
@@ -52,6 +46,8 @@ export class UserService {
           .subscribe();
 
         this.codeSubscription();
+      } else {
+        this.setGhAuthUrlPreServer(); // will set login anchor's href at server render
       }
    }
 
@@ -62,9 +58,9 @@ export class UserService {
           return this.dealWithCode(queryParams['code']);
         }
         if (queryParams['loggingIn']) {
-          return Observable.of('still logging in');;
+          return Observable.of('still logging in');
         }
-        return this.getGhAuthInfo();
+        return this.setGhAuthUrlPreRx(); // will set login anchor's href at client render
       })
    }
 
@@ -81,13 +77,23 @@ export class UserService {
     return Observable.of('will process with code');
   }
 
-  private getGhAuthInfo(): Observable<any> {
+  private setGhAuthUrlPreRx(): Observable<any> {
+    // because the client bundle is generated before process.env is set (in the postinstall script),
+    // so we need to http.get the ghAuth (after process.env is set).
     return this.http.get('/api/auth/gh-auth-info')
       .map(res => {
         const ghAuth = res.json();
-        this._ghAuthUrlPre = `${ghAuth.baseUrl}?client_id=${ghAuth.cid}&redirect_uri=http://localhost:4200`;
-        this._loginUrlRxx.next(this._ghAuthUrlPre);
-      })
+        const redirectRoot = environment.production ? ghAuth.redirectProd : ghAuth.redirectDev;
+        const ghAuthUrlPre = `${ghAuth.baseUrl}?client_id=${ghAuth.cid}&redirect_uri=${redirectRoot}`;
+        this._loginUrlRxx.next(ghAuthUrlPre);
+      });
+  }
+
+  private setGhAuthUrlPreServer() {
+    const ghAuth = environment.ghAuth;
+    const redirectRoot = environment.production ? ghAuth.redirectProd : ghAuth.redirectDev;
+    const ghAuthUrlPre = `${ghAuth.baseUrl}?client_id=${ghAuth.cid}&redirect_uri=${redirectRoot}`;
+    this._loginUrlRxx.next(ghAuthUrlPre);
   }
 
   private codeSubscription() {
