@@ -11,8 +11,6 @@ import { UserService } from './services/user.service';
 import { HelpersService } from './services/helpers.service';
 
 
-const ghAuth = environment.ghAuth;
-
 @NgModule({
   imports: [
     CommonModule,
@@ -36,7 +34,7 @@ export class SharedModule {
       providers: [
         LogService,
         UserService,
-        { provide: 'GhAuth', useValue: ghAuth },
+        { provide: 'isProd', useValue: environment.production },
         HelpersService
       ]
     };
