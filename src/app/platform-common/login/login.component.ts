@@ -12,11 +12,11 @@ export class LoginComponent implements OnInit {
   @Input() loggingIn: boolean;
 
   constructor(
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    @Inject('isBrowser') private isBrowser
   ) { }
 
   ngOnInit() {
-
   }
 
 

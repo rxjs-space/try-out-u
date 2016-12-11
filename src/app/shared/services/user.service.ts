@@ -61,7 +61,7 @@ export class UserService {
           return Observable.of('still logging in');
         }
         return this.setGhAuthUrlPreRx(); // will set login anchor's href at client render
-      })
+      });
    }
 
   private dealWithCode(code) {
