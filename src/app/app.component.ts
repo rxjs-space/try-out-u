@@ -10,6 +10,4 @@ import { Router } from '@angular/router';
 export class AppComponent {
   constructor(private router: Router) {
   } // For viewing the routes in Augury, inject Router here with the name router
-  ngOnInit() {
-  }
 }

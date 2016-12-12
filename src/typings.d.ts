@@ -7,4 +7,18 @@
 // }
 
 
-// declare const System;
+declare var System: SystemJS;
+
+interface SystemJS {
+  import: (path?: string) => Promise<any>;
+}
+// Extra variables that live on Global that will be replaced by webpack DefinePlugin
+declare var ENV: string;
+declare var HMR: boolean;
+declare var Zone: {current: any};
+interface GlobalEnvironment {
+  ENV;
+  HMR;
+  SystemJS: SystemJS;
+  System: SystemJS;
+}

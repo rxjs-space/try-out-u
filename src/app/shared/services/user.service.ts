@@ -141,8 +141,10 @@ export class UserService {
 
   tokenNotExpired() {
     const mySiteToken = localStorage.getItem('mySiteToken');
+
     if (mySiteToken) {
       const tokenExp = this.helpers.parseJwt(mySiteToken, 1)['exp'];
+      // console.log(new Date(tokenExp*1000));
       return tokenExp > (Date.now() / 1000);
     } else {
       return false;
