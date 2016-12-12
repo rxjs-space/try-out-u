@@ -5,3 +5,6 @@
 // declare namespace Reflect {
 //     const getMetadata: any; // this one is used to get the annotation of component in shared/pipes/log-it.pipe
 // }
+
+
+// declare const System;
