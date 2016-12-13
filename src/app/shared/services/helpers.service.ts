@@ -7,10 +7,10 @@ import { routes } from '../../platform-common/platform-common-routing.module';
 export class HelpersService {
 
   constructor(
-    /*@Inject('isBrowser') private isBrowser,
+    /*@Inject('isNode') private isNode,
     private router: Router*/) {
 
-    // if (!isBrowser) {
+    // if (isNode) {
     //   this.router.resetConfig(this.noLazyRoutes(routes));
     // }
   }

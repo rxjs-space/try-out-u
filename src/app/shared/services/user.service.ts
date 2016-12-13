@@ -20,7 +20,6 @@ import { environment } from '../../../environments/environment';
 @Injectable()
 export class UserService {
   // private _ghAuthUrlPre = `${this.ghAuth.baseUrl}?client_id=${this.ghAuth.cid}&redirect_uri=http://localhost:4200`;
-  private _ghCode: BehaviorSubject<string> = new BehaviorSubject(null);
   private _loginStatusRxx: BehaviorSubject<boolean> = new BehaviorSubject(false);
     // '-1' is not logged-in, 0 is logging-in, 1 is logged-in
   private _loggingInRxx: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -43,7 +42,7 @@ export class UserService {
             return Observable.of(false);
           } else {
             return this.route.queryParams
-              .filter(queryParams => queryParams['code'] || queryParams['loggingIn'])
+              .filter(queryParams => queryParams['code'])
               .map(() => true);
           }
         })
@@ -51,41 +50,45 @@ export class UserService {
 
 
       if (isBrowser) {
-        // queryParams with code or loggingIn
-        if (this.tokenNotExpired()) {
+        if (this.tokenNotExpired()) { // tokenNotExpired will check localStorage, which node has not
           this._loginStatusRxx.next(true);
         }
         this._loginStatusRxx
           .filter(v => !v) // if loginStatus is false, do following
-          .switchMap(() => this.generateAndUpdateLoginUrl())
-          .subscribe();
-
-        this.codeSubscription();
+          .switchMap(() => {
+            return this.route.queryParams
+            .switchMap(queryParams => {
+              if (queryParams['code']) {
+                return this.dealWithCode(queryParams['code']); // found code, process login
+              } else {
+                return this.setGhAuthUrlRx(); // no code, update loginUrl
+              }
+            });
+          })
+          .subscribe(() => {}, (e) => console.log(e));
       }
    }
 
-  private generateAndUpdateLoginUrl(): Observable<any> {
-    return this.route.queryParams
-      .switchMap(queryParams => {
-        if (queryParams['code']) {
-          return this.dealWithCode(queryParams['code']);
-        } else {
-          return this.setGhAuthUrlRx(); // will set login anchor's href at client render
+
+  private dealWithCode(code) { // send code to backend
+    this._loggingInRxx.next(true);
+    return this.http.get(`/api/auth/?code=${code}`)
+      .do(res => { // if login success...
+        // remove queryParams['loggingIn']
+        const urlTree = this.router.parseUrl(this.router.url);
+        if (urlTree.queryParams['code']) {
+          const redirectUrlTree = Object.assign({}, urlTree);
+          delete redirectUrlTree.queryParams['code'];
+          this.router.navigateByUrl(this.router.serializeUrl(redirectUrlTree));
         }
+        this._loginStatusRxx.next(true);
+        this._loggingInRxx.next(false);
+        const mySiteToken = res.text();
+        localStorage.setItem('mySiteToken', mySiteToken); // save the token to localStorage
+        const userInfo = this.helpers.parseJwt(mySiteToken, 1);
+        console.log(userInfo);
+        this._userInfoRxx.next(userInfo);
       });
-   }
-
-  private dealWithCode(code) { // remove code queryParam from url and send code to backend
-
-    const url = this.router.url;
-    const urlTree = this.router.parseUrl(url);
-    const redirectUrlTree = Object.assign({}, urlTree);
-    delete redirectUrlTree.queryParams['code']; // remove the ghCode for redirect
-    redirectUrlTree.queryParams['loggingIn'] = 'true'; // set loggingIn queryParam for login component
-    this.router.navigateByUrl(this.router.serializeUrl(redirectUrlTree));
-
-    this._ghCode.next(code); // push the ghCode to BehaviorSubject
-    return Observable.of('will process with code');
   }
 
   private setGhAuthUrlRx(): Observable<any> {
@@ -116,33 +119,6 @@ export class UserService {
     }
   }
 
-  private codeSubscription() {
-    // each time receiving a new ghCode, go to backend,
-    this._ghCode.filter(code => Boolean(code))
-      .switchMap(code => {
-        return this.http.get(`/api/auth/?code=${code}`);
-        // the backend will use to code to get gh access_token and gh user info and compare/save to db and generate my_jwt
-      })
-      .subscribe(res => { // if login success...
-        // remove queryParams['loggingIn']
-        const urlTree = this.router.parseUrl(this.router.url);
-        if (urlTree.queryParams['loggingIn']) {
-          const redirectUrlTree = Object.assign({}, urlTree);
-          delete redirectUrlTree.queryParams['loggingIn'];
-          this.router.navigateByUrl(this.router.serializeUrl(redirectUrlTree));
-        }
-        this._loginStatusRxx.next(true);
-        this._loggingInRxx.next(false);
-        const mySiteToken = res.text();
-        localStorage.setItem('mySiteToken', mySiteToken); // save the token to localStorage
-        const userInfo = this.helpers.parseJwt(mySiteToken, 1);
-        console.log(userInfo);
-        this._userInfoRxx.next(userInfo);
-      }, err => {       // if login failed...
-        console.log(err);
-      });
-  }
-
   logOut() {
     this._loginStatusRxx.next(false);
     localStorage.removeItem('mySiteToken');
@@ -165,9 +141,6 @@ export class UserService {
     }
   }
 
-  // get myTokenAlive() {
-  //   return tokenNotExpired();
-  // }
 
   get loginUrlRxx() {
     return this._loginUrlRxx;
@@ -188,11 +161,6 @@ export class UserService {
   get mySiteTokenRxx() {
     return this._mySiteTokenRxx;
   }
-
-  logout() {
-
-  }
-
 
 }
 
