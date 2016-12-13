@@ -10,6 +10,7 @@ import { LoginComponent } from './login/login.component';
 
 // import { SharedModule } from '../shared/shared.module';
 import { UserService } from '../shared/services/user.service';
+import { UserServiceMock } from '../shared/services/user.service.mock';
 import { HttpModule, Http, BaseRequestOptions } from '@angular/http';
 import { MockBackend } from '@angular/http/testing';
 import { environment } from '../../environments/environment';
@@ -27,20 +28,11 @@ describe('PlatformCommonComponent', () => {
       imports: [RouterTestingModule],
       declarations: [ PlatformCommonComponent, LoginComponent ],
       providers: [
-        UserService,
+        { provide: UserService, useValue: UserServiceMock },
         { provide: 'GhAuth', useValue: ghAuth },
         HelpersService,
         { provide: 'isBrowser', useValue: isBrowser },
-        { provide: 'isNode', useValue: isNode },
-        {
-          provide: Http,
-          useFactory: (mockBackend, options) => {
-            return new Http(mockBackend, options);
-          },
-          deps: [MockBackend, BaseRequestOptions]
-        },
-        MockBackend,
-        BaseRequestOptions
+        { provide: 'isNode', useValue: isNode }
       ]
   })
     .compileComponents();

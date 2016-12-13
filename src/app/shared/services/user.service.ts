@@ -1,5 +1,4 @@
 import { Injectable, Inject } from '@angular/core';
-import { Http } from '@angular/http';
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
@@ -14,6 +13,7 @@ import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/switchMap';
 
 import { HelpersService } from './helpers.service';
+import { AjaxService } from './ajax.service';
 
 import { environment } from '../../../environments/environment';
 
@@ -29,10 +29,10 @@ export class UserService {
   private _mySiteTokenRxx: BehaviorSubject<string> = new BehaviorSubject(null);
 
   constructor(
-    private http: Http,
     private router: Router,
     private route: ActivatedRoute,
     private helpers: HelpersService,
+    private ajax: AjaxService,
     @Inject('isBrowser') private isBrowser) {
 
       // check if 'logging in'
@@ -72,7 +72,7 @@ export class UserService {
 
   private dealWithCode(code) { // send code to backend
     this._loggingInRxx.next(true);
-    return this.http.get(`/api/auth/?code=${code}`)
+    return this.ajax.processCode(code)
       .do(res => { // if login success...
         // remove queryParams['loggingIn']
         const urlTree = this.router.parseUrl(this.router.url);
@@ -111,7 +111,7 @@ export class UserService {
     if (this._ghAuth) {
       return Observable.of(this._ghAuth);
     } else {
-      return this.http.get('/api/auth/gh-auth-info')
+      return this.ajax.getGhAuth()
         .map(res => {
           this._ghAuth = res.json();
           return this._ghAuth;
@@ -160,6 +160,11 @@ export class UserService {
 
   get mySiteTokenRxx() {
     return this._mySiteTokenRxx;
+  }
+
+  nothing() {
+    this.ajax.getNothing()
+      .subscribe(console.log);
   }
 
 }

@@ -71,8 +71,13 @@ authApi.get('/', (req, res, next) => {
 
 authApi.get('/gh-auth-info', (req, res) => {
   res.send(ghAuth);
-})
+});
 
+
+authApi.get('/nothing', (req, res) => {
+  // console.log(req.cookies());
+  res.send('nothing');
+});
 
 
 

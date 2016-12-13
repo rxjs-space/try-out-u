@@ -13,13 +13,13 @@ import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/switchMap';
 
 import { HelpersService } from './helpers.service';
+import { AjaxServiceMock as AjaxService } from './ajax.service.mock';
 
 import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class UserServiceMock {
   // private _ghAuthUrlPre = `${this.ghAuth.baseUrl}?client_id=${this.ghAuth.cid}&redirect_uri=http://localhost:4200`;
-  private _ghCode: BehaviorSubject<string> = new BehaviorSubject(null);
   private _loginStatusRxx: BehaviorSubject<boolean> = new BehaviorSubject(false);
     // '-1' is not logged-in, 0 is logging-in, 1 is logged-in
   private _loggingInRxx: BehaviorSubject<boolean> = new BehaviorSubject(false);
@@ -32,49 +32,63 @@ export class UserServiceMock {
     private router: Router,
     private route: ActivatedRoute,
     private helpers: HelpersService,
+    private ajax: AjaxService,
     @Inject('isBrowser') private isBrowser) {
-      this.route.queryParams
-        .filter(queryParams => queryParams['code'] || queryParams['loggingIn'])
-        .subscribe(() => {
-          this._loggingInRxx.next(true);
-        });
+
+      // check if 'logging in'
+      this._loginStatusRxx
+        .switchMap((loginStatus) => {
+          if (loginStatus) {
+            return Observable.of(false);
+          } else {
+            return this.route.queryParams
+              .filter(queryParams => queryParams['code'])
+              .map(() => true);
+          }
+        })
+        .subscribe(this._loggingInRxx);
+
 
       if (isBrowser) {
-        // queryParams with code or loggingIn
-        if (this.tokenNotExpired()) {
+        if (this.tokenNotExpired()) { // tokenNotExpired will check localStorage, which node has not
           this._loginStatusRxx.next(true);
         }
         this._loginStatusRxx
-          .filter(v => !v)
-          .switchMap(() => this.generateAndUpdateLoginUrl())
-          .subscribe();
-
-        this.codeSubscription();
+          .filter(v => !v) // if loginStatus is false, do following
+          .switchMap(() => {
+            return this.route.queryParams
+            .switchMap(queryParams => {
+              if (queryParams['code']) {
+                return this.dealWithCode(queryParams['code']); // found code, process login
+              } else {
+                return this.setGhAuthUrlRx(); // no code, update loginUrl
+              }
+            });
+          })
+          .subscribe(() => {}, (e) => console.log(e));
       }
    }
 
-  private generateAndUpdateLoginUrl(): Observable<any> {
-    return this.route.queryParams
-      .switchMap(queryParams => {
-        if (queryParams['code']) {
-          return this.dealWithCode(queryParams['code']);
-        } else {
-          return this.setGhAuthUrlRx(); // will set login anchor's href at client render
+
+  private dealWithCode(code) { // send code to backend
+    this._loggingInRxx.next(true);
+    return this.ajax.processCode(code)
+      .do(res => { // if login success...
+        // remove queryParams['loggingIn']
+        const urlTree = this.router.parseUrl(this.router.url);
+        if (urlTree.queryParams['code']) {
+          const redirectUrlTree = Object.assign({}, urlTree);
+          delete redirectUrlTree.queryParams['code'];
+          this.router.navigateByUrl(this.router.serializeUrl(redirectUrlTree));
         }
+        this._loginStatusRxx.next(true);
+        this._loggingInRxx.next(false);
+        const mySiteToken = res.text();
+        localStorage.setItem('mySiteToken', mySiteToken); // save the token to localStorage
+        const userInfo = this.helpers.parseJwt(mySiteToken, 1);
+        console.log(userInfo);
+        this._userInfoRxx.next(userInfo);
       });
-   }
-
-  private dealWithCode(code) { // remove code queryParam from url and send code to backend
-
-    const url = this.router.url;
-    const urlTree = this.router.parseUrl(url);
-    const redirectUrlTree = Object.assign({}, urlTree);
-    delete redirectUrlTree.queryParams['code']; // remove the ghCode for redirect
-    redirectUrlTree.queryParams['loggingIn'] = 'true'; // set loggingIn queryParam for login component
-    this.router.navigateByUrl(this.router.serializeUrl(redirectUrlTree));
-
-    this._ghCode.next(code); // push the ghCode to BehaviorSubject
-    return Observable.of('will process with code');
   }
 
   private setGhAuthUrlRx(): Observable<any> {
@@ -97,38 +111,12 @@ export class UserServiceMock {
     if (this._ghAuth) {
       return Observable.of(this._ghAuth);
     } else {
-      this._ghAuth = environment.ghAuth;
-      return this._ghAuth;
-    }
-  }
-
-  private codeSubscription() {
-    // each time receiving a new ghCode, go to backend,
-    this._ghCode.filter(code => Boolean(code))
-      .switchMap(code => {
-        return Observable.of({
-          text: () => 'I am a token'
+      return this.ajax.getGhAuth()
+        .map(res => {
+          this._ghAuth = res.json();
+          return this._ghAuth;
         });
-        // the backend will use to code to get gh access_token and gh user info and compare/save to db and generate my_jwt
-      })
-      .subscribe(res => { // if login success...
-        // remove queryParams['loggingIn']
-        const urlTree = this.router.parseUrl(this.router.url);
-        if (urlTree.queryParams['loggingIn']) {
-          const redirectUrlTree = Object.assign({}, urlTree);
-          delete redirectUrlTree.queryParams['loggingIn'];
-          this.router.navigateByUrl(this.router.serializeUrl(redirectUrlTree));
-        }
-        this._loginStatusRxx.next(true);
-        this._loggingInRxx.next(false);
-        const mySiteToken = res.text();
-        localStorage.setItem('mySiteToken', mySiteToken); // save the token to localStorage
-        const userInfo = this.helpers.parseJwt(mySiteToken, 1);
-        console.log(userInfo);
-        this._userInfoRxx.next(userInfo);
-      }, err => {       // if login failed...
-        console.log(err);
-      });
+    }
   }
 
   logOut() {
@@ -153,9 +141,6 @@ export class UserServiceMock {
     }
   }
 
-  // get myTokenAlive() {
-  //   return tokenNotExpired();
-  // }
 
   get loginUrlRxx() {
     return this._loginUrlRxx;
@@ -177,10 +162,10 @@ export class UserServiceMock {
     return this._mySiteTokenRxx;
   }
 
-  logout() {
-
+  nothing() {
+    this.ajax.getNothing()
+      .subscribe(console.log);
   }
-
 
 }
 

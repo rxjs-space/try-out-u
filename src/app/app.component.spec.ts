@@ -8,8 +8,7 @@ import { PlatformCommonComponent } from './platform-common/platform-common.compo
 import { LoginComponent } from './platform-common/login/login.component';
 
 import { UserService } from './shared/services/user.service';
-import { HttpModule, Http, BaseRequestOptions } from '@angular/http';
-import { MockBackend } from '@angular/http/testing';
+import { UserServiceMock } from './shared/services/user.service.mock';
 import { environment } from '../environments/environment';
 const ghAuth = environment.ghAuth;
 import { HelpersService } from './shared/services/helpers.service';
@@ -26,20 +25,11 @@ describe('AppComponent', () => {
         LoginComponent
       ],
       providers: [
-        UserService,
         { provide: 'GhAuth', useValue: ghAuth },
         HelpersService,
         { provide: 'isBrowser', useValue: isBrowser },
         { provide: 'isNode', useValue: isNode },
-        {
-          provide: Http,
-          useFactory: (mockBackend, options) => {
-            return new Http(mockBackend, options);
-          },
-          deps: [MockBackend, BaseRequestOptions]
-        },
-        MockBackend,
-        BaseRequestOptions
+        { provide: UserService, useValue: UserServiceMock }
       ]
 
     });

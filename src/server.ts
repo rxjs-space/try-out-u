@@ -57,6 +57,12 @@ app.use('/api', api);
  * @param res
  */
 export const ngApp = (req: Request, res: Response) => {
+  res.cookie('csrf-token', 'abc', {
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+    httpOnly: true,
+    // secure: true,
+    // signed: true
+  });
   res.render('index', {
     req,
     res,

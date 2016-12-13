@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, /*ChangeDetectorRef*/ } from '@angular/core';
 import { UserService } from '../shared/services/user.service';
-import { ActivatedRoute } from '@angular/router';
+// import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-platform-common',

@@ -9,6 +9,7 @@ import { LogService } from './services/log.service';
 import { ToggleClassDirective } from './directives/toggle-class.directive';
 import { UserService } from './services/user.service';
 import { HelpersService } from './services/helpers.service';
+import { AjaxService } from './services/ajax.service';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ export class SharedModule {
         LogService,
         UserService,
         { provide: 'isProd', useValue: environment.production },
-        HelpersService
+        HelpersService,
+        AjaxService
       ]
     };
   }
