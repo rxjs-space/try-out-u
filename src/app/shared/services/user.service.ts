@@ -35,11 +35,20 @@ export class UserService {
     private route: ActivatedRoute,
     private helpers: HelpersService,
     @Inject('isBrowser') private isBrowser) {
-      this.route.queryParams
-        .filter(queryParams => queryParams['code'] || queryParams['loggingIn'])
-        .subscribe(() => {
-          this._loggingInRxx.next(true);
-        });
+
+      // check if 'logging in'
+      this._loginStatusRxx
+        .switchMap((loginStatus) => {
+          if (loginStatus) {
+            return Observable.of(false);
+          } else {
+            return this.route.queryParams
+              .filter(queryParams => queryParams['code'] || queryParams['loggingIn'])
+              .map(() => true);
+          }
+        })
+        .subscribe(this._loggingInRxx);
+
 
       if (isBrowser) {
         // queryParams with code or loggingIn
@@ -47,7 +56,7 @@ export class UserService {
           this._loginStatusRxx.next(true);
         }
         this._loginStatusRxx
-          .filter(v => !v)
+          .filter(v => !v) // if loginStatus is false, do following
           .switchMap(() => this.generateAndUpdateLoginUrl())
           .subscribe();
 
