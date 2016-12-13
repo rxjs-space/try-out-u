@@ -3,6 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
+import { UserService } from '../../shared/services/user.service';
+import { UserServiceMock } from '../../shared/services/user.service.mock';
 import { ProfileDetailComponent } from './profile-detail.component';
 
 describe('ProfileDetailComponent', () => {
@@ -11,7 +13,11 @@ describe('ProfileDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProfileDetailComponent ]
+      declarations: [ ProfileDetailComponent ],
+      providers: [
+        {provide: UserService, useValue: UserServiceMock},
+        {provide: 'isBrowser', useValue: true},
+      ]
     })
     .compileComponents();
   }));
