@@ -13,6 +13,7 @@
     [loginUrl]="userService.loginUrlRxx | async"
     [loggingIn]="userService.loggingInRxx | async"
     (logOut)="userService.logOut()"
+    (logIn)="userService.logIn()"
   ></app-login>
 </nav>
 <router-outlet></router-outlet>

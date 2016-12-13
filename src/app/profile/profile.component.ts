@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-profile',
@@ -7,7 +7,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 })
 export class ProfileComponent implements OnInit {
 
-  constructor(@Inject('isBrowser') private isBrowser) { }
+  constructor() { }
 
   ngOnInit() {
   }

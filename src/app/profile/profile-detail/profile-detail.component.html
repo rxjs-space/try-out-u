@@ -1,0 +1,13 @@
+<p *ngIf="!isBrowser && !(userService.loggingInRxx | async)">
+  loading...
+</p>
+<p *ngIf="isBrowser && !(userService.loginStatusRxx | async) && !(userService.loggingInRxx | async)">
+  Please log in.
+</p>
+<p *ngIf="(userService.loggingInRxx | async)">
+  logging in...
+</p>
+<p *ngIf="isBrowser && (userService.loginStatusRxx | async)">
+  profile-detail works!
+</p>
+

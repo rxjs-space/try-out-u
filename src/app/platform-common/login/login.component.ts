@@ -11,6 +11,7 @@ export class LoginComponent implements OnInit {
   @Input() loginUrl: string;
   @Input() loggingIn: boolean;
   @Output() logOut = new EventEmitter();
+  @Output() logIn = new EventEmitter();
 
   constructor(
     private route: ActivatedRoute,
@@ -22,6 +23,10 @@ export class LoginComponent implements OnInit {
 
   onLogOutClick() {
     this.logOut.emit();
+  }
+
+  onLogInClick() {
+    this.logIn.emit();
   }
 
 

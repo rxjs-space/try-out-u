@@ -139,6 +139,10 @@ export class UserService {
     localStorage.removeItem('mySiteToken');
   }
 
+  logIn() {
+    this._loggingInRxx.next(true);
+  }
+
   tokenNotExpired() {
     const mySiteToken = localStorage.getItem('mySiteToken');
 
@@ -147,6 +151,7 @@ export class UserService {
       // console.log(new Date(tokenExp*1000));
       return tokenExp > (Date.now() / 1000);
     } else {
+      this._loginStatusRxx.next(false);
       return false;
     }
   }

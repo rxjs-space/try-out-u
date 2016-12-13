@@ -3,7 +3,8 @@ import { NgModule } from '@angular/core';
 import { ProfileModule } from '../profile/profile.module';
 import { HomeComponent } from './home/home.component';
 import { HeroAppComponent } from '../hero-app/hero-app.component';
-import { AuthGuardsService } from '../shared/services/auth-guards.service';
+// import { AuthGuardsService } from '../shared/services/auth-guards.service';
+
 // export function getProfileModule() {
 //   return System.import('../profile/profile.module')
 //     .then(mod => mod['ProfileModule']);
@@ -30,7 +31,8 @@ export const routes: Routes = [
       { path: 'hero', component: HeroAppComponent },
       // { path: 'profile', loadChildren: '../profile/profile.module#ProfileModule' },
       // { path: 'profile', loadChildren: '../profile/profile.module#ProfileModule', syncChildren: () => ProfileModule },
-      { path: 'profile', canLoad: [AuthGuardsService], loadChildren: getProfileModule },
+      // { path: 'profile', loadChildren: () => ProfileModule },
+      { path: 'profile', loadChildren: getProfileModule },
     ]
   },
 ];
@@ -41,7 +43,7 @@ export const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
-  providers: [ AuthGuardsService ]
+  providers: [ /*AuthGuardsService*/ ]
 })
 
 export class AppCommonRoutingModule {
