@@ -3,14 +3,17 @@ import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Observable } from 'rxjs/Observable';
 
+
 // import { tokenNotExpired } from 'angular2-jwt';
 
 import 'rxjs/add/observable/of';
+import 'rxjs/add/observable/throw';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/take';
 import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/catch';
 
 import { HelpersService } from './helpers.service';
 import { AjaxService } from './ajax.service';
@@ -88,7 +91,8 @@ export class UserService {
         const userInfo = this.helpers.parseJwt(mySiteToken, 1);
         console.log(userInfo);
         this._userInfoRxx.next(userInfo);
-      });
+      })
+      .catch((err) => Observable.throw(err));
   }
 
   private setGhAuthUrlRx(): Observable<any> {
@@ -101,7 +105,7 @@ export class UserService {
           .filter(event => event instanceof NavigationEnd)
           .map(event => {
             this._loginUrlRxx.next(ghAuthUrlPre + this.router.url);
-          });
+          })
       });
   }
 
@@ -115,7 +119,9 @@ export class UserService {
         .map(res => {
           this._ghAuth = res.json();
           return this._ghAuth;
-        });
+        })
+        .catch((err) => Observable.throw(err));
+
     }
   }
 

@@ -1,3 +1,7 @@
 a.clear {
     clear: both;
 }
+
+:host /deep/ img {
+    max-width: 90%
+}

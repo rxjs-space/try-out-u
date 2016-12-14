@@ -10,6 +10,7 @@ describe('AjaxService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
+        {provide: 'isBrowser', useValue: true },
         AjaxService,
         {
           provide: Http,

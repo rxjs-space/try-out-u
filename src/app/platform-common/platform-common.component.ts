@@ -6,15 +6,17 @@ import { UserService } from '../shared/services/user.service';
   selector: 'app-platform-common',
   templateUrl: './platform-common.component.html',
   styleUrls: ['./platform-common.component.scss'],
-  changeDetection: 1
+  changeDetection: 0
 })
 export class PlatformCommonComponent implements OnInit {
   title: string = 'Welcome!';
+
   // loginUrl: string;
   constructor(
     private userService: UserService) { }
 
   ngOnInit() {
+    // this.ajax.getArticleHtml().subscribe(h => this.innerHHH = 'go');
     // console.log(Reflect.getMetadata('annotations', this.constructor));
     // this.userService.loginUrlRxx.subscribe(url => {
     //   // console.log(url);
