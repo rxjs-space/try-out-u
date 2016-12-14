@@ -9,7 +9,8 @@
       "outDir": "dist",
       "assets": [
         "assets",
-        "favicon.ico"
+        "favicon.ico",
+        "baidu_verify_6kKR9ZrA4I.html"
       ],
       "index": "index.html",
       "main": "client.ts",
