@@ -1,4 +1,9 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input,
+  trigger,
+  state,
+  style,
+  transition,
+  animate } from '@angular/core';
 
 import { Hero } from '../hero';
 
@@ -6,7 +11,21 @@ import { Hero } from '../hero';
   selector: 'app-hero-li',
   templateUrl: './hero-li.component.html',
   styleUrls: ['./hero-li.component.scss'],
-  changeDetection: 0
+  changeDetection: 0,
+  animations: [
+    trigger('heroState', [
+      state('inactive', style({
+        backgroundColor: '#eee',
+        transform: 'scale(1)'
+      })),
+      state('active',   style({
+        backgroundColor: '#cfd8dc',
+        transform: 'scale(1.1)'
+      })),
+      transition('inactive => active', [style({color: 'black'}), animate('100ms ease-in')]),
+      transition('active => inactive', animate('100ms ease-out'))
+    ])
+  ]
 })
 export class HeroLiComponent implements OnInit {
   @Input() hero: Hero;

@@ -1,6 +1,9 @@
 <li 
   [class.selected]="hero?.selected"
-  (click)="selectHero()">
+  (click)="selectHero()"
+  [@heroState]="hero.selected ? 'active' : 'inactive'"
+>
+
   <span class="badge">{{hero?.id}}</span>
   {{hero?.name}}
   <span hidden="{{ this | logIt:'hero':'id' }}"></span>

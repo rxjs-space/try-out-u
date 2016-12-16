@@ -1,5 +1,5 @@
 <h1>{{title}}</h1>
-<section class="heroes-container">
+<section class="heroes-container" [@heroesState]="'in'">
   <app-hero-list 
     [heroes]="heroesRxx | async" 
     [heroRxxMap]="heroRxxMap" 

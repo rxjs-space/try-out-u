@@ -27,7 +27,8 @@ export const routes: Routes = [
     //   urlBeforeLogin: 
     // },
     children: [
-      { path: '', pathMatch: 'full', component: HomeComponent },
+      { path: '', pathMatch: 'full', redirectTo: 'home' },
+      { path: 'home', component: HomeComponent },
       { path: 'hero', component: HeroAppComponent },
       // { path: 'profile', loadChildren: '../profile/profile.module#ProfileModule' },
       // { path: 'profile', loadChildren: '../profile/profile.module#ProfileModule', syncChildren: () => ProfileModule },
