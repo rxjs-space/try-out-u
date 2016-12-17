@@ -1,7 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbAccordionModule } from '../ngb/accordion/accordion.module';
+
+import { TlAccordionModule } from '../tl-ui/tl-accordion/tl-accordion.module';
 
 import { AppCommonRoutingModule } from './platform-common-routing.module';
 import { PlatformCommonComponent } from './platform-common.component';
@@ -19,7 +22,8 @@ import { LoginComponent } from './login/login.component';
     AppCommonRoutingModule,
     HeroAppModule,
     SharedModule.withProviders(),
-    NgbModule.forRoot()
+    NgbAccordionModule.forRoot(),
+    TlAccordionModule
   ],
 })
 export class PlatformCommonModule { }

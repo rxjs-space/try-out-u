@@ -1,0 +1,29 @@
+<div role="tab" class="card-header" (click)="expanded = !expanded; stateRxx.next({self: self, expanded: expanded})">
+  <ng-content select="tl-accordion-panel-title"></ng-content>
+</div>
+<div role="tablpanel" class="card-block" [style.display]="expanded ? 'inherit' : 'none'">
+  <ng-content select="tl-accordion-panel-content"></ng-content>
+</div>
+
+
+
+<!--<div class="card">
+  <template ngFor let-panel [ngForOf]="panels">
+    <div role="tab" id="{{panel.id}}-header" [attr.aria-selected]="panel.focused"
+      [class]="'card-header ' + (panel.type ? 'card-'+panel.type: type ? 'card-'+type : '')" [class.active]="isOpen(panel.id)">
+      <a href (click)="!!toggle(panel.id)" (focus)="panel.focused = true" 
+        (blur)="panel.focused = false" [class.text-muted]="panel.disabled" 
+        [attr.aria-expanded]="isOpen(panel.id)" [attr.aria-controls]="panel.id">
+        {{panel.title}}
+        <template [ngTemplateOutlet]="panel.titleTpl?.templateRef"></template>
+      </a>
+    </div>
+    <div 
+      [@panelContentState]="isOpen(panel.id) ? 'expanded' : 'collapsed'"
+      *ngIf="!panel.disabled"
+      id="{{panel.id}}" role="tabpanel" [attr.aria-labelledby]="panel.id + '-header'" class="card-block"
+    >
+      <template [ngTemplateOutlet]="panel.contentTpl.templateRef"></template>
+    </div>
+  </template>
+</div>-->

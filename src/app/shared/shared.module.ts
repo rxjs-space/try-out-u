@@ -10,6 +10,8 @@ import { ToggleClassDirective } from './directives/toggle-class.directive';
 import { UserService } from './services/user.service';
 import { HelpersService } from './services/helpers.service';
 import { AjaxService } from './services/ajax.service';
+import { TlLearnDirective } from './directives/tl-learn.directive';
+import { TlLearnComponent } from './components/tl-learn/tl-learn.component';
 
 
 @NgModule({
@@ -18,14 +20,18 @@ import { AjaxService } from './services/ajax.service';
     FormsModule
   ],
   declarations: [
-    /*SharedComponent,*/ 
-    LogItPipe, 
-    ToggleClassDirective
+    /*SharedComponent,*/
+    LogItPipe,
+    ToggleClassDirective,
+    TlLearnDirective,
+    TlLearnComponent
   ],
   exports: [
     LogItPipe,
     FormsModule,
-    ToggleClassDirective
+    ToggleClassDirective,
+    TlLearnDirective,
+    TlLearnComponent
   ]
 })
 export class SharedModule {
