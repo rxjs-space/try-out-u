@@ -1,0 +1,20 @@
+<div class="card" *ngIf="panels.length > 0">
+  <template ngFor let-panel [ngForOf]="panels">
+    <div role="tab" class="card-header" [innerHTML]="panel.title"></div>
+    <div role="tablpanel" class="card-block" 
+      [innerHtml]="panel.content" 
+      [style.display]="panel.expanded ? 'inherit' : 'none'"
+    ></div>
+  </template>
+</div>
+
+  <!--<div role="tab" class="card-header" 
+    (click)="disabled ? void : expanded = !expanded; stateRxx.next({panel: this, expanded: expanded})"
+    [class.text-muted]="disabled"
+  >
+    <div class="tooltip-when-disabled" *ngIf="disabled">Disabled</div>
+    <ng-content select="tl-accordion-panel-title"></ng-content>
+  </div>
+  <div role="tablpanel" class="card-block" [style.display]="expanded ? 'inherit' : 'none'" *ngIf="!disabled">
+    <ng-content select="tl-accordion-panel-content"></ng-content>
+  </div>-->

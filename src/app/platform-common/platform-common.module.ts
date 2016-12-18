@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { NgbAccordionModule } from '../ngb/accordion/accordion.module';
 
 import { TlAccordionModule } from '../tl-ui/tl-accordion/tl-accordion.module';
+import { TlAccordionrModule } from '../tl-ui/tl-accordionr/tl-accordionr.module';
 
 import { AppCommonRoutingModule } from './platform-common-routing.module';
 import { PlatformCommonComponent } from './platform-common.component';
@@ -23,7 +24,8 @@ import { LoginComponent } from './login/login.component';
     HeroAppModule,
     SharedModule.withProviders(),
     NgbAccordionModule.forRoot(),
-    TlAccordionModule
+    TlAccordionModule,
+    TlAccordionrModule
   ],
 })
 export class PlatformCommonModule { }
