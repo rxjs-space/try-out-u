@@ -6,26 +6,26 @@
   <div>xyz</div>
 </app-tl-learn>
 
-<tl-accordion [showOneOnly]="true">
+<tl-accordion [expandOneOnly]="true">
   <tl-accordion-panel [expanded]="true">
     <tl-accordion-panel-title>
       title0
     </tl-accordion-panel-title>
     <tl-accordion-panel-content>
-      content
+      content0
     </tl-accordion-panel-content>
   </tl-accordion-panel>
 
-  <tl-accordion-panel>
+  <tl-accordion-panel [expanded]="true">
     <tl-accordion-panel-title>
-      title2
+      title1
     </tl-accordion-panel-title>
     <tl-accordion-panel-content>
-      content2
+      content1
     </tl-accordion-panel-content>
   </tl-accordion-panel>
 
-  <tl-accordion-panel>
+  <tl-accordion-panel [disabled]="true">
     <tl-accordion-panel-title>
       title2
     </tl-accordion-panel-title>

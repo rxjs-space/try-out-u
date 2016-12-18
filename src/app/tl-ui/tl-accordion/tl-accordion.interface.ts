@@ -2,7 +2,7 @@ import { TlAccordionPanelComponent } from './tl-accordion-panel/tl-accordion-pan
 import { Subject } from 'rxjs/Subject';
 
 export interface PanelState {
-  self: TlAccordionPanelComponent;
+  panel: TlAccordionPanelComponent;
   expanded: boolean;
 }
 

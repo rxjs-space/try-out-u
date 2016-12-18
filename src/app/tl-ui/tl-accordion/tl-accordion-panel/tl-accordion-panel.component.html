@@ -1,7 +1,11 @@
-<div role="tab" class="card-header" (click)="expanded = !expanded; stateRxx.next({self: self, expanded: expanded})">
+<div role="tab" class="card-header" 
+  (click)="disabled ? void : expanded = !expanded; stateRxx.next({panel: this, expanded: expanded})"
+  [class.text-muted]="disabled"
+>
+  <div class="tooltip-when-disabled" *ngIf="disabled">Disabled</div>
   <ng-content select="tl-accordion-panel-title"></ng-content>
 </div>
-<div role="tablpanel" class="card-block" [style.display]="expanded ? 'inherit' : 'none'">
+<div role="tablpanel" class="card-block" [style.display]="expanded ? 'inherit' : 'none'" *ngIf="!disabled">
   <ng-content select="tl-accordion-panel-content"></ng-content>
 </div>
 

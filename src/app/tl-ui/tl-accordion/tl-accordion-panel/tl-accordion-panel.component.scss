@@ -1,0 +1,29 @@
+.card-header {
+    position: relative;
+    & .tooltip-when-disabled {
+      position: absolute;
+      visibility: hidden; 
+      z-index: 1;
+      color: white;
+      background-color: black;
+      // width: 100px;
+      text-align: center;
+      border-radius: 5px;
+      padding: 5px;
+      top: -5px;
+      left: 70px;
+    }
+}
+
+// .card-header .tooltip-when-disabled {
+//   position: absolute;
+//   visibility: hidden; 
+//   z-index: 1;
+// }
+
+.card-header:hover {
+  text-decoration: underline;
+  & .tooltip-when-disabled {
+    visibility: visible;
+  }
+}
