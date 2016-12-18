@@ -1,12 +1,22 @@
 <p *appTlLearn>
   home works!
 </p>
-<app-tl-learn>
-  text content
-  <div>xyz</div>
-</app-tl-learn>
 
 <tl-accordion [expandOneOnly]="true">
+
+  <tl-accordion-panel [expanded]="true">
+    <tl-accordion-panel-title>title0</tl-accordion-panel-title>
+    <tl-accordion-panel-content>content0</tl-accordion-panel-content>
+  </tl-accordion-panel>
+
+  <tl-accordion-panel>
+    <tl-accordion-panel-title>title1</tl-accordion-panel-title>
+    <tl-accordion-panel-content>content1</tl-accordion-panel-content>
+  </tl-accordion-panel>
+
+</tl-accordion>
+
+<!--<tl-accordion [expandOneOnly]="true">
   <tl-accordion-panel [expanded]="true">
     <tl-accordion-panel-title>
       title0
@@ -41,7 +51,8 @@
       content2
     </tl-accordion-panel-content>
   </tl-accordion-panel>
-</tl-accordion>
+</tl-accordion>-->
+
 <!--<template appTlLearn></template>-->
 <!--<div [innerHtml]="innerHHH | async"></div>-->
 
