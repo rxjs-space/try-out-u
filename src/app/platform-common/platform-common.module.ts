@@ -25,7 +25,7 @@ import { LoginComponent } from './login/login.component';
     SharedModule.withProviders(),
     NgbAccordionModule.forRoot(),
     TlAccordionModule,
-    TlAccordionrModule
+    TlAccordionrModule.forRoot()
   ],
 })
 export class PlatformCommonModule { }

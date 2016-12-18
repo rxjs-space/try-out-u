@@ -1,9 +1,14 @@
 <div class="card" *ngIf="panels.length > 0">
   <template ngFor let-panel [ngForOf]="panels">
-    <div role="tab" class="card-header" [innerHTML]="panel.title"></div>
+    <div role="tab" class="card-header" 
+      [innerHTML]="panel.title"
+      (click)="onPanelClick(panel)"
+      [class.text-muted]="panel.disabled"
+    ></div>
     <div role="tablpanel" class="card-block" 
-      [innerHtml]="panel.content" 
+      [innerHTML]="panel.content" 
       [style.display]="panel.expanded ? 'inherit' : 'none'"
+      *ngIf="!panel.disabled"
     ></div>
   </template>
 </div>

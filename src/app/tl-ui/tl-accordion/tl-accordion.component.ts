@@ -17,7 +17,7 @@ import { PanelState, PanelStateRxx } from './tl-accordion.interface';
 export class TlAccordionComponent {
   @Input() public expandOneOnly: boolean = false;
   @ContentChildren(TlAccordionPanelComponent) private panels: QueryList<TlAccordionPanelComponent>;
-  private lastExpandedAtPanel: TlAccordionPanelComponent = null;
+  private lastExpandedPanel: TlAccordionPanelComponent = null;
   private subscriptions: Subscription[] = []; // to unsubscribe in ngDestroy
   constructor() { }
   ngAfterContentInit() {
@@ -33,16 +33,16 @@ Will keep the first expanded panel as expanded and collapse the rest.
           if (index > 0) {panel.expanded = false;};
         })
       }
-      this.lastExpandedAtPanel = expandedPanelsInTemplate[0];
+      this.lastExpandedPanel = expandedPanelsInTemplate[0];
 
       // subscribe to mergedPanelStatesRx
       const panelStateRxxArr: PanelStateRxx[] = this.panels.map(panel => panel.stateRxx);
       const mergedPanelStatesRx: Observable<PanelState> = Observable.merge(...panelStateRxxArr);
       const subscription = mergedPanelStatesRx
-        .filter(panelState => panelState.expanded === true && this.lastExpandedAtPanel !== panelState.panel)
+        .filter(panelState => panelState.expanded === true && this.lastExpandedPanel !== panelState.panel)
         .do(panelState => {
-          this.lastExpandedAtPanel.expanded = false;
-          this.lastExpandedAtPanel = panelState.panel;
+          this.lastExpandedPanel.expanded = false;
+          this.lastExpandedPanel = panelState.panel;
         })
         .subscribe();
       this.subscriptions.push(subscription);

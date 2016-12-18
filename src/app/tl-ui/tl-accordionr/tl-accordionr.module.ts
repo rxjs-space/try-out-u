@@ -1,6 +1,7 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TlAccordionrComponent } from './tl-accordionr.component';
+import { TlAccordionrConfigService } from './tl-accordionr-config.service';
 
 @NgModule({
   imports: [
@@ -8,6 +9,12 @@ import { TlAccordionrComponent } from './tl-accordionr.component';
   ],
   declarations: [TlAccordionrComponent],
   exports: [TlAccordionrComponent],
-
 })
-export class TlAccordionrModule { }
+export class TlAccordionrModule {
+  static forRoot(): ModuleWithProviders {
+    return {
+      ngModule: TlAccordionrModule,
+      providers: [TlAccordionrConfigService]
+    }
+  }
+}
