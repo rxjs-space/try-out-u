@@ -9,7 +9,7 @@ import { Panel } from './tl-accordionr.interface';
 })
 export class TlAccordionrComponent implements OnInit {
   @Input() private expandOneOnly: boolean;
-  @Input() private panels: Panel[];
+  @Input() private panels: Panel[] = [];
   private lastExpandedPanel: Panel;
   constructor(private config: TlAccordionrConfigService) { }
 
@@ -19,13 +19,13 @@ export class TlAccordionrComponent implements OnInit {
       this.expandOneOnly = this.config.expandOneOnly;
     }
     // init lastExpandedPanel
-    if (this.panels.length && this.panels.length > 0) {
+    if (this.panels.length > 0) {
       const lastExpandedPanels = this.panels.filter(panel => panel.expanded);
       this.lastExpandedPanel = lastExpandedPanels[0];
     }
   }
 
-  onPanelClick(panel: Panel) {
+  onTitleClick(panel: Panel) {
     if (!panel.disabled) {
       panel.expanded = !panel.expanded;
       if (this.lastExpandedPanel !== panel && this.expandOneOnly) {

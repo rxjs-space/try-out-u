@@ -13,10 +13,10 @@ import { Panel } from '../../tl-ui/tl-accordionr/tl-accordionr.interface';
 export class HomeComponent implements OnInit {
   // innerHHH = this.ajax.getArticleHtml();
   private panels: Panel[] = [
-    {title: '<span>title0</span>', content: 'content0', expanded: true},
+    {title: '<span>&#9733; <b>Fancy</b> title0 &#9733;</span>', content: 'content0', expanded: true},
     {title: 'title1', content: 'content1'},
     {title: 'title2', content: 'content2', disabled: true},
-  ]
+  ];
   constructor(
     /*private ajax: AjaxService*/) { }
 

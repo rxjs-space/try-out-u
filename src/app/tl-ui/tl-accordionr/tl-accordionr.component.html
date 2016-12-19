@@ -2,7 +2,7 @@
   <template ngFor let-panel [ngForOf]="panels">
     <div role="tab" class="card-header" 
       [innerHTML]="panel.title"
-      (click)="onPanelClick(panel)"
+      (click)="onTitleClick(panel)"
       [class.text-muted]="panel.disabled"
     ></div>
     <div role="tablpanel" class="card-block" 
