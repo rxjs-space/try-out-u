@@ -1,5 +1,7 @@
+<div>Call me Accordion-<strong>R</strong></div>
+<div class="card" *ngIf="panels.length === 0">No panels provided.</div>
 <div class="card" *ngIf="panels.length > 0">
-  <template ngFor let-panel [ngForOf]="panels">
+  <template *ngIf="config.animation" ngFor let-panel [ngForOf]="panels">
     <div role="tab" class="card-header" 
       [innerHTML]="panel.title"
       (click)="onTitleClick(panel)"
@@ -7,11 +9,25 @@
     ></div>
     <div role="tablpanel" class="card-block" 
       [innerHTML]="panel.content" 
-      [style.display]="panel.expanded ? 'inherit' : 'none'"
+      [@panelContentState]="panel.expanded ? 'expanded' : 'collapsed'"
+      *ngIf="!panel.disabled"
+    ></div>
+  </template>
+  <template *ngIf="!config.animation" ngFor let-panel [ngForOf]="panels">
+    <div role="tab" class="card-header" 
+      [innerHTML]="panel.title"
+      (click)="onTitleClick(panel)"
+      [class.text-muted]="panel.disabled"
+    ></div>
+    <div role="tablpanel" class="card-block" 
+      [innerHTML]="panel.content" 
+      [style.display]="panel.expanded ? null : 'none'"
       *ngIf="!panel.disabled"
     ></div>
   </template>
 </div>
+
+<!--      [style.display]="panel.expanded ? 'inherit' : 'none'" -->
 
   <!--<div role="tab" class="card-header" 
     (click)="disabled ? void : expanded = !expanded; stateRxx.next({panel: this, expanded: expanded})"

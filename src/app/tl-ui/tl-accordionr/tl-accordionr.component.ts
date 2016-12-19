@@ -1,11 +1,13 @@
 import { Component, OnInit, Input, } from '@angular/core';
 import { TlAccordionrConfigService } from './tl-accordionr-config.service';
 import { Panel } from './tl-accordionr.interface';
+import { accordinrAnimations } from './tl-accordionr.component.animation';
 @Component({
   selector: 'tl-accordionr',
   templateUrl: './tl-accordionr.component.html',
   styleUrls: ['./tl-accordionr.component.scss'],
-  changeDetection: 0
+  changeDetection: 0,
+  animations: accordinrAnimations
 })
 export class TlAccordionrComponent implements OnInit {
   @Input() private expandOneOnly: boolean;

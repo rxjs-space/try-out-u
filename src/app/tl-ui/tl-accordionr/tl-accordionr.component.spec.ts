@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 import { Component } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
@@ -29,7 +29,7 @@ fdescribe('TlAccordionrComponent', () => {
   let accordionEl: DebugElement;
 
   beforeEach(async(() => {
-    TlAccordionrConfigServiceStub = {expandOneOnly: false};
+    TlAccordionrConfigServiceStub = {expandOneOnly: false, animation: true};
     TestBed.configureTestingModule({
       declarations: [ TestHostComponent, TlAccordionrComponent ],
       providers: [
@@ -57,22 +57,27 @@ fdescribe('TlAccordionrComponent', () => {
     expect(accordionComponent['lastExpandedPanel']).toEqual(componentHost.panels[0]);
   });
 
-  it('should act as expected when click on title', () => {
+  it('should act as expected when click on title', fakeAsync(() => {
     const titleElArr = fixtureHost.debugElement.queryAll(By.css('tl-accordionr .card-header'));
     const contentElArr = fixtureHost.debugElement.queryAll(By.css('tl-accordionr .card-block'));
 
     expect(accordionComponent['panels'][0].expanded).toBe(true); // [0] is expanded initially
     titleElArr[1].triggerEventHandler('click', {}); // click on [1]
     fixtureHost.detectChanges();
-    expect(accordionComponent['panels'][0].expanded).toBe(false); // [0] is collapsed
-    expect(accordionComponent['panels'][1].expanded).toBe(true); // [1] is expanded
-    expect(contentElArr[0].styles['display']).toBe('none', '[0] is collapsed');
-    expect(contentElArr[1].styles['display']).toBe('inherit', '[1] is collapsed');
+    expect(accordionComponent['panels'][0].expanded).toBe(false); // model [0] is collapsed
+    expect(accordionComponent['panels'][1].expanded).toBe(true); // model [1] is expanded
+
+    if (TlAccordionrConfigServiceStub.animation) {tick(500);} // don't know how to set stub.animation during test
+
+    expect(contentElArr[0].styles['display']).toBe('none', 'dom [0] is collapsed, after animation');
+    expect(contentElArr[1].styles['display']).toBeNull('dom [1] is style.display is not explicitly set.');
     titleElArr[2].triggerEventHandler('click', {}); // click on [2]
     fixtureHost.detectChanges();
     expect(accordionComponent['panels'][2].expanded).toBeUndefined(); // [2] has not expanded property initially and is disabled
     expect(contentElArr[2]).toBeUndefined(); // disabled content not rendered
-  });
+  }));
+
+
 
   // beforeEach(() => {
   //   fixture = TestBed.createComponent(TlAccordionrComponent);
