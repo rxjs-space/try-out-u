@@ -20,7 +20,6 @@ class TestHostComponent {
   ];
 }
 
-
 fdescribe('TlAccordionrComponent', () => {
   let componentHost: TestHostComponent;
   let fixtureHost: ComponentFixture<TestHostComponent>;
@@ -48,7 +47,7 @@ fdescribe('TlAccordionrComponent', () => {
     fixtureHost.detectChanges();
   });
 
-  it('should inject', () => {
+  it('should inject the config', () => {
     expect(accordionEl.injector.get(TlAccordionrConfigService)).toEqual(TlAccordionrConfigServiceStub);
  });
 
@@ -58,10 +57,21 @@ fdescribe('TlAccordionrComponent', () => {
     expect(accordionComponent['lastExpandedPanel']).toEqual(componentHost.panels[0]);
   });
 
-  it('should act as expected when run onTitleClick()', () => {
-    const onTitleClick = accordionComponent['onTitleClick'].bind(accordionComponent);
-    onTitleClick(accordionComponent['panels'][1]);
-    expect(accordionComponent['panels'][0].expanded).toBe(false);
+  it('should act as expected when click on title', () => {
+    const titleElArr = fixtureHost.debugElement.queryAll(By.css('tl-accordionr .card-header'));
+    const contentElArr = fixtureHost.debugElement.queryAll(By.css('tl-accordionr .card-block'));
+
+    expect(accordionComponent['panels'][0].expanded).toBe(true); // [0] is expanded initially
+    titleElArr[1].triggerEventHandler('click', {}); // click on [1]
+    fixtureHost.detectChanges();
+    expect(accordionComponent['panels'][0].expanded).toBe(false); // [0] is collapsed
+    expect(accordionComponent['panels'][1].expanded).toBe(true); // [1] is expanded
+    expect(contentElArr[0].styles['display']).toBe('none', '[0] is collapsed');
+    expect(contentElArr[1].styles['display']).toBe('inherit', '[1] is collapsed');
+    titleElArr[2].triggerEventHandler('click', {}); // click on [2]
+    fixtureHost.detectChanges();
+    expect(accordionComponent['panels'][2].expanded).toBeUndefined(); // [2] has not expanded property initially and is disabled
+    expect(contentElArr[2]).toBeUndefined(); // disabled content not rendered
   });
 
   // beforeEach(() => {
