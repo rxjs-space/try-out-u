@@ -11,6 +11,7 @@ import { accordinrAnimations } from './tl-accordionr.component.animation';
 })
 export class TlAccordionrComponent implements OnInit {
   @Input() private expandOneOnly: boolean;
+  @Input() private animation: boolean;
   @Input() private panels: Panel[] = [];
   private lastExpandedPanel: Panel;
   constructor(@Optional() private config: TlAccordionrConfigService) {
@@ -26,6 +27,10 @@ export class TlAccordionrComponent implements OnInit {
     // init expandOneOnly
     if (typeof this.expandOneOnly === 'undefined') {
       this.expandOneOnly = this.config.expandOneOnly;
+    }
+    // init animation
+    if (typeof this.animation === 'undefined') {
+      this.animation = this.config.animation;
     }
     // init lastExpandedPanel
     if (this.panels.length > 0) {

@@ -1,7 +1,7 @@
 <div>Call me Accordion-<strong>R</strong></div>
 <div class="card" *ngIf="panels.length === 0">No panels provided.</div>
 <div class="card" *ngIf="panels.length > 0">
-  <template *ngIf="config.animation" ngFor let-panel [ngForOf]="panels">
+  <template *ngIf="animation" ngFor let-panel [ngForOf]="panels">
     <a href role="tab" class="card-header" 
       [style.display]="'block'"
       [innerHTML]="panel.title"
@@ -14,7 +14,7 @@
       *ngIf="!panel.disabled"
     ></div>
   </template>
-  <template *ngIf="!config.animation" ngFor let-panel [ngForOf]="panels">
+  <template *ngIf="!animation" ngFor let-panel [ngForOf]="panels">
     <a href role="tab" class="card-header nona" 
       [style.display]="'block'"
       [innerHTML]="panel.title"
