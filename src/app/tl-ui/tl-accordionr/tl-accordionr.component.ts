@@ -16,10 +16,7 @@ export class TlAccordionrComponent implements OnInit {
   private lastExpandedPanel: Panel;
   constructor(@Optional() private config: TlAccordionrConfigService) {
     if (!this.config) {
-      this.config = <TlAccordionrConfigService>{
-        expandOneOnly: false,
-        animation: true
-      };
+      this.config = new TlAccordionrConfigService();
     }
   }
 
