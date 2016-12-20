@@ -11,7 +11,7 @@ import { TlAccordionrConfigService } from './tl-accordionr-config.service';
   exports: [TlAccordionrComponent],
 })
 export class TlAccordionrModule {
-  static forRoot(): ModuleWithProviders {
+  static withProviders(): ModuleWithProviders {
     return {
       ngModule: TlAccordionrModule,
       providers: [TlAccordionrConfigService]

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, } from '@angular/core';
+import { Component, OnInit, Input, Optional} from '@angular/core';
 import { TlAccordionrConfigService } from './tl-accordionr-config.service';
 import { Panel } from './tl-accordionr.interface';
 import { accordinrAnimations } from './tl-accordionr.component.animation';
@@ -13,7 +13,14 @@ export class TlAccordionrComponent implements OnInit {
   @Input() private expandOneOnly: boolean;
   @Input() private panels: Panel[] = [];
   private lastExpandedPanel: Panel;
-  constructor(private config: TlAccordionrConfigService) { }
+  constructor(@Optional() private config: TlAccordionrConfigService) {
+    if (!this.config) {
+      this.config = <TlAccordionrConfigService>{
+        expandOneOnly: false,
+        animation: true
+      };
+    }
+  }
 
   ngOnInit() {
     // init expandOneOnly

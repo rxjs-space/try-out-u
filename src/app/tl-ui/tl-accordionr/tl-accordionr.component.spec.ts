@@ -64,7 +64,7 @@ fdescribe('TlAccordionrComponent', () => {
 
     expect(accordionComponent['panels'][0].expanded).toBe(true); // [0] is expanded initially
 
-    titleElArr[1].triggerEventHandler('click', {preventDefault: () => {console.log('called pd')}}); // click on [1]
+    titleElArr[1].triggerEventHandler('click', {preventDefault: () => {/*console.log('called pd')*/}}); // click on [1]
     fixtureHost.detectChanges();
     expect(accordionComponent['panels'][0].expanded).toBe(false); // model [0] is collapsed
     expect(accordionComponent['panels'][1].expanded).toBe(true); // model [1] is expanded
