@@ -49,6 +49,7 @@ fdescribe('TlAccordionrComponent', () => {
 
   it('should inject the config', () => {
     expect(accordionEl.injector.get(TlAccordionrConfigService)).toEqual(TlAccordionrConfigServiceStub);
+    expect(accordionComponent['config']).toEqual(TlAccordionrConfigServiceStub);
  });
 
   it('should initialize with TestHost setup', () => {
@@ -62,20 +63,32 @@ fdescribe('TlAccordionrComponent', () => {
     const contentElArr = fixtureHost.debugElement.queryAll(By.css('tl-accordionr .card-block'));
 
     expect(accordionComponent['panels'][0].expanded).toBe(true); // [0] is expanded initially
-    titleElArr[1].triggerEventHandler('click', {}); // click on [1]
+
+    titleElArr[1].triggerEventHandler('click', {preventDefault: () => {console.log('called pd')}}); // click on [1]
     fixtureHost.detectChanges();
     expect(accordionComponent['panels'][0].expanded).toBe(false); // model [0] is collapsed
     expect(accordionComponent['panels'][1].expanded).toBe(true); // model [1] is expanded
 
-    if (TlAccordionrConfigServiceStub.animation) {tick(500);} // don't know how to set stub.animation during test
+    if (TlAccordionrConfigServiceStub.animation) {tick(500);} // don't know how to reset stub.animation and recompile during test
 
     expect(contentElArr[0].styles['display']).toBe('none', 'dom [0] is collapsed, after animation');
     expect(contentElArr[1].styles['display']).toBeNull('dom [1] is style.display is not explicitly set.');
-    titleElArr[2].triggerEventHandler('click', {}); // click on [2]
+
+
+    titleElArr[2].triggerEventHandler('click', {preventDefault: () => {}}); // click on [2]
     fixtureHost.detectChanges();
     expect(accordionComponent['panels'][2].expanded).toBeUndefined(); // [2] has not expanded property initially and is disabled
     expect(contentElArr[2]).toBeUndefined(); // disabled content not rendered
-  }));
+  
+    titleElArr[0].triggerEventHandler('click', {preventDefault: () => {}}); // click on [1]
+    fixtureHost.detectChanges();
+    expect(accordionComponent['panels'][1].expanded).toBe(false); // model [0] is collapsed
+    expect(accordionComponent['panels'][0].expanded).toBe(true); // model [1] is expanded
+    if (TlAccordionrConfigServiceStub.animation) {tick(500);} // don't know how to set stub.animation during test
+    expect(contentElArr[1].styles['display']).toBe('none', 'dom [0] is collapsed, after animation');
+    expect(contentElArr[0].styles['display']).toBeNull('dom [1] is style.display is not explicitly set.');
+
+}));
 
 
 

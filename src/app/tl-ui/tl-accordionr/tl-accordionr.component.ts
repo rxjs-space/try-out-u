@@ -27,7 +27,10 @@ export class TlAccordionrComponent implements OnInit {
     }
   }
 
-  onTitleClick(panel: Panel) {
+  onTitleClick(event: any, panel: Panel) {
+    if (typeof event !== 'undefined' && event.preventDefault) {
+      event.preventDefault();
+    }
     if (!panel.disabled) {
       panel.expanded = !panel.expanded;
       if (this.lastExpandedPanel !== panel && this.expandOneOnly) {

@@ -2,11 +2,12 @@
 <div class="card" *ngIf="panels.length === 0">No panels provided.</div>
 <div class="card" *ngIf="panels.length > 0">
   <template *ngIf="config.animation" ngFor let-panel [ngForOf]="panels">
-    <div role="tab" class="card-header" 
+    <a href role="tab" class="card-header" 
+      [style.display]="'block'"
       [innerHTML]="panel.title"
-      (click)="onTitleClick(panel)"
+      (click)="onTitleClick($event, panel)"
       [class.text-muted]="panel.disabled"
-    ></div>
+    ></a>
     <div role="tablpanel" class="card-block" 
       [innerHTML]="panel.content" 
       [@panelContentState]="panel.expanded ? 'expanded' : 'collapsed'"
@@ -14,11 +15,12 @@
     ></div>
   </template>
   <template *ngIf="!config.animation" ngFor let-panel [ngForOf]="panels">
-    <div role="tab" class="card-header" 
+    <a href role="tab" class="card-header nona" 
+      [style.display]="'block'"
       [innerHTML]="panel.title"
-      (click)="onTitleClick(panel)"
+      (click)="onTitleClick($event, panel)"
       [class.text-muted]="panel.disabled"
-    ></div>
+    ></a>
     <div role="tablpanel" class="card-block" 
       [innerHTML]="panel.content" 
       [style.display]="panel.expanded ? null : 'none'"
