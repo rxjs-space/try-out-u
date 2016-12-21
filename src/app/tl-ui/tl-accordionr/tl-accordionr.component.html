@@ -1,32 +1,31 @@
 <div>Call me Accordion-<strong>R</strong></div>
 <div class="card" *ngIf="panels.length === 0">No panels provided.</div>
 <div class="card" *ngIf="panels.length > 0">
-  <template *ngIf="animation" ngFor let-panel [ngForOf]="panels">
+
+  <!--<template ngFor let-panel [ngForOf]="panels">-->
+  <ng-container *ngFor="let panel of panels">
     <a href role="tab" class="card-header" 
       [style.display]="'block'"
       [innerHTML]="panel.title"
       (click)="onTitleClick($event, panel)"
       [class.text-muted]="panel.disabled"
     ></a>
-    <div role="tablpanel" class="card-block" 
-      [innerHTML]="panel.content" 
-      [@panelContentState]="panel.expanded ? 'expanded' : 'collapsed'"
-      *ngIf="!panel.disabled"
-    ></div>
-  </template>
-  <template *ngIf="!animation" ngFor let-panel [ngForOf]="panels">
-    <a href role="tab" class="card-header nona" 
-      [style.display]="'block'"
-      [innerHTML]="panel.title"
-      (click)="onTitleClick($event, panel)"
-      [class.text-muted]="panel.disabled"
-    ></a>
-    <div role="tablpanel" class="card-block" 
-      [innerHTML]="panel.content" 
-      [style.display]="panel.expanded ? null : 'none'"
-      *ngIf="!panel.disabled"
-    ></div>
-  </template>
+    <template [ngIf]="animation">
+      <div role="tablpanel" class="card-block" 
+        [innerHTML]="panel.content" 
+        [@panelContentState]="panel.expanded ? 'expanded' : 'collapsed'"
+        *ngIf="!panel.disabled"
+      ></div>
+    </template>
+    <template [ngIf]="!animation">
+      <div role="tablpanel" class="card-block" 
+        [innerHTML]="panel.content" 
+        [style.display]="panel.expanded ? null : 'none'"
+        *ngIf="!panel.disabled"
+      ></div>
+    </template>
+  </ng-container>  
+  <!--</template>-->
 </div>
 
 <!--      [style.display]="panel.expanded ? 'inherit' : 'none'" -->

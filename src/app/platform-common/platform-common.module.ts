@@ -14,6 +14,8 @@ import { HeroAppModule } from '../hero-app/hero-app.module';
 import { SharedModule } from '../shared/shared.module';
 import { LoginComponent } from './login/login.component';
 
+import { TlUiModule } from 'tl-ui/src/app/tl-ui/tl-ui.module';
+
 @NgModule({
   declarations: [PlatformCommonComponent, HomeComponent, LoginComponent],
   exports: [PlatformCommonComponent],
@@ -25,7 +27,8 @@ import { LoginComponent } from './login/login.component';
     SharedModule.withProviders(),
     NgbAccordionModule.forRoot(),
     TlAccordionModule,
-    TlAccordionrModule.withProviders()
+    TlAccordionrModule.withProviders(),
+    TlUiModule
   ],
 })
 export class PlatformCommonModule { }
