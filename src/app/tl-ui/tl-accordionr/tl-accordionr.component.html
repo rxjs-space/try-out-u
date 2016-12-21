@@ -4,26 +4,26 @@
 
   <!--<template ngFor let-panel [ngForOf]="panels">-->
   <ng-container *ngFor="let panel of panels">
+
     <a href role="tab" class="card-header" 
       [style.display]="'block'"
       [innerHTML]="panel.title"
       (click)="onTitleClick($event, panel)"
       [class.text-muted]="panel.disabled"
     ></a>
-    <template [ngIf]="animation">
-      <div role="tablpanel" class="card-block" 
-        [innerHTML]="panel.content" 
-        [@panelContentState]="panel.expanded ? 'expanded' : 'collapsed'"
-        *ngIf="!panel.disabled"
-      ></div>
-    </template>
-    <template [ngIf]="!animation">
-      <div role="tablpanel" class="card-block" 
-        [innerHTML]="panel.content" 
-        [style.display]="panel.expanded ? null : 'none'"
-        *ngIf="!panel.disabled"
-      ></div>
-    </template>
+
+    <div *ngIf="!panel.disabled && animation"
+      role="tablpanel" class="card-block" 
+      [innerHTML]="panel.content" 
+      [@panelContentState]="panel.expanded ? 'expanded' : 'collapsed'"
+    ></div>
+
+    <div *ngIf="!panel.disabled && !animation"
+      role="tablpanel" class="card-block" 
+      [innerHTML]="panel.content" 
+      [style.display]="panel.expanded ? null : 'none'"
+    ></div>
+    
   </ng-container>  
   <!--</template>-->
 </div>
